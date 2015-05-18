@@ -96,7 +96,7 @@ public class createRandomPrefs {
 	private static void createTable(Connection connection){
 		PreparedStatement ps;
 		try {
-			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_if SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision)");
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_id SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision)");
 			ps.executeUpdate();
 			ps.close();
 			System.out.println("Created prefs table");
