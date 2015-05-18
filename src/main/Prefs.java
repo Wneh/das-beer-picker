@@ -13,4 +13,8 @@ public class Prefs {
 		this.pref2 = pref2;
 		this.pref3 = pref3;
 	}
+	
+	public String toString(){
+		return "id: "+id + ", pref1: " + pref1 + ", pref2: " + pref2 + ", pref3: " + pref3;
+	}
 }

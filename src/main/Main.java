@@ -15,29 +15,45 @@ public class Main {
 
 	public Main(){
 		Connection connection = new utils.DatabaseConnection().getConnection();
-		loadPersons(connection);
+		ArrayList<Person> persons = loadPersons(connection);
+		System.out.println(persons);
+		ArrayList<Prefs> prefs = loadPrefs(connection);
+		System.out.println(prefs);
+		
+	}
+	
+	public ArrayList<Prefs> loadPrefs(Connection connection){
+		ArrayList<Prefs> result = new ArrayList<Prefs>();
+		String getStatement = "SELECT * FROM prefs;";
+		
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(getStatement);
+			while(rs.next()){
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
+				result.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		return result;
 	}
 	
 	public ArrayList<Person> loadPersons(Connection connection){
 		ArrayList<Person> result = new ArrayList<Person>();
-		
 		String getStatement = "SELECT * FROM persons;";
 		
 		try {
-//			PreparedStatement ps = connection.prepareStatement(getStatement);
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
 				Person p = new Person(rs.getInt("persons_id"),rs.getInt("age"),rs.getInt("length"),rs.getInt("weight"));
-				System.out.println(p);
 				result.add(p);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		return null;
+		}	
+		return result;
 	}
 	
 	public static void main(String[] args) {
