@@ -97,9 +97,9 @@ public class Main {
 	}
 
 	public Double cosineSimilarity(Person person1, Person person2){
-		//
-
-		return 0.0;
+		double [] p1 = person1.toArray();
+		double [] p2 = person2.toArray();
+		return new CosineSimilarity().cosineSimilarity(p1, p2);
 	}
 
 	public static void main(String[] args) {
