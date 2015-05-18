@@ -19,7 +19,9 @@ public class Main {
 		System.out.println(persons);
 		ArrayList<Prefs> prefs = loadPrefs(connection);
 		System.out.println(prefs);
-		
+		System.out.println(calculateCentroid(persons).get(0)+ " " + calculateCentroid(persons).get(1) + " " +calculateCentroid(persons).get(2));
+		System.out.println(persons.get(45).toString());
+		System.out.println(calculateWeightedValues(persons.get(45)).get(0) + " " + calculateWeightedValues(persons.get(45)).get(1) + " " +calculateWeightedValues(persons.get(45)).get(2));
 	}
 	
 	public ArrayList<Prefs> loadPrefs(Connection connection){
@@ -61,10 +63,9 @@ public class Main {
 		int a = 0, l = 0, w = 0;
 		ArrayList<Integer> tmpWeights;
 		for (Person person : persons){
-			tmpWeights = calculateWeightedValues(person);
-			a += tmpWeights.get(0);
-			l += tmpWeights.get(1);
-			w += tmpWeights.get(2);
+			a += person.age;
+			l += person.length;
+			w += person.weight;
 		}
 		centroid.add(a/persons.size());
 		centroid.add(l/persons.size());
