@@ -96,6 +96,12 @@ public class Main {
 		return null;
 	}
 
+	public Double cosineSimilarity(Person person1, Person person2){
+		//
+
+		return 0.0;
+	}
+
 	public static void main(String[] args) {
 		new Main();
 	}
