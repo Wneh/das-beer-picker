@@ -17,4 +17,12 @@ public class Person {
 	public String toString(){
 		return "id: " + this.id + ", age: " + this.age + ", length: " + this.length + ", weight: " + this.weight;
 	}
+
+	public double[] toArray(){
+		double [] arr = new double[3];
+		arr[0] = age;
+		arr[1] = length;
+		arr[2] = weight;
+		return arr;
+	}
 }
