@@ -13,4 +13,8 @@ public class Person {
 		this.length = length;
 		this.weight = weight;
 	}
+	
+	public String toString(){
+		return "id: " + this.id + ", age: " + this.age + ", length: " + this.length + ", weight: " + this.weight;
+	}
 }
