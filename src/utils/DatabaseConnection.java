@@ -27,7 +27,7 @@ public class DatabaseConnection {
 		Connection connection = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/mdb");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/mdb","postgres","root");
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
