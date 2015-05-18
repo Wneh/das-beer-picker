@@ -1,5 +1,10 @@
 package main;
 
+/*
+ * Code taken from:
+ * http://computergodzilla.blogspot.se/2013/07/how-to-calculate-tf-idf-of-document.html
+ */
+
 public class CosineSimilarity {
 
     /**
