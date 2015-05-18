@@ -86,6 +86,15 @@ public class Main {
 		return weights;
 	}
 
+	public Double euclideanDistance(Person person1, Person person2){
+		Double dist = Math.sqrt((person1.age-person2.age)^2 + (person1.length-person2.length)^2 +(person1.weight-person2.weight)^2);
+		return dist;
+	}
+
+	public Double sqrtEuclideanDistance(Person person1, Person person2){
+		//maybe later
+		return null;
+	}
 
 	public static void main(String[] args) {
 		new Main();
