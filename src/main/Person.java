@@ -17,7 +17,7 @@ public class Person implements Comparable<Person> {
 	}
 	
 	public String toString(){
-		return "id: " + this.id + ", age: " + this.age + ", length: " + this.length + ", weight: " + this.weight +", cosineScore: "+ this.cosineScore;
+		return "id: " + this.id + ", age: " + this.age + ", length: " + this.length + ", weight: " + this.weight +", cosineScore: "+ this.cosineScore + "\n";
 	}
 
 	public double[] toArray(){

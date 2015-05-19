@@ -14,11 +14,12 @@ public class Main {
 	public Main(){
 		Connection connection = new utils.DatabaseConnection().getConnection();
 		ArrayList<Person> persons = loadPersons(connection);
-		System.out.println(persons);
+		//System.out.println(persons);
 		ArrayList<Prefs> prefs = loadPrefs(connection);
-		System.out.println(prefs);
+		//System.out.println(prefs);
 		System.out.println();
-		System.out.println(new CentroidCandidateFinder().findCentroidCandidates(persons,5));
+		System.out.println(new CentroidCandidateFinder().findCentroidCandidates(persons,20));
+		System.out.println(new DiversePersonSelection().selectMostDiversePersons(new CentroidCandidateFinder().findCentroidCandidates(persons, 20),5));
 	}
 	
 	public ArrayList<Prefs> loadPrefs(Connection connection){
