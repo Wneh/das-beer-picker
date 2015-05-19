@@ -17,9 +17,16 @@ public class Main {
 		//System.out.println(persons);
 		ArrayList<Prefs> prefs = loadPrefs(connection);
 		//System.out.println(prefs);
-		System.out.println();
-		System.out.println(new CentroidCandidateFinder().findCentroidCandidates(persons,20));
-		System.out.println(new DiversePersonSelection().selectMostDiversePersons(new CentroidCandidateFinder().findCentroidCandidates(persons, 20),5));
+		ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
+		System.out.println("Toppersons size: "+toppersons.size());
+		System.out.println(toppersons);
+		ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,20);
+		System.out.println("Candidates: "+cands);
+		ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands,5);
+		System.out.println("Res: "+res);
+
+
+
 	}
 	
 	public ArrayList<Prefs> loadPrefs(Connection connection){
@@ -54,6 +61,11 @@ public class Main {
 			e.printStackTrace();
 		}	
 		return result;
+	}
+
+	public void testing(){
+		ArrayList<Person> persons = new ArrayList<Person>();
+		//Person p1 = new Person(0,)
 	}
 
 
