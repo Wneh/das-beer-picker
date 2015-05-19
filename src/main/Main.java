@@ -22,6 +22,10 @@ public class Main {
 		System.out.println(calculateCentroid(persons).get(0)+ " " + calculateCentroid(persons).get(1) + " " +calculateCentroid(persons).get(2));
 		System.out.println(persons.get(45).toString());
 		System.out.println(calculateWeightedValues(persons.get(45)).get(0) + " " + calculateWeightedValues(persons.get(45)).get(1) + " " +calculateWeightedValues(persons.get(45)).get(2));
+		System.out.println(persons.get(12));
+		System.out.println(persons.get(345));
+		System.out.println("CosineSim: " + cosineSimilarity(persons.get(12), persons.get(345)));
+		System.out.println("Euc: " + euclideanDistance(persons.get(12), persons.get(345)));
 	}
 	
 	public ArrayList<Prefs> loadPrefs(Connection connection){
