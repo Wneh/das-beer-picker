@@ -1,5 +1,8 @@
 package main;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,19 +32,15 @@ public class Main {
 		ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
 		System.out.println("Toppersons size: "+toppersons.size());
 		System.out.println(toppersons);
-		ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,20);
+		ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,10);
 		System.out.println("Candidates: "+cands);
 		ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands,5);
 		System.out.println("Res: "+res);
 
-
-		for(Person p : persons) System.out.println(p.toPlotString());
-		System.out.println();
-		for(Person p : toppersons) System.out.println(p.toPlotString());
-		System.out.println();
-		for(Person p : cands) System.out.println(p.toPlotString());
-		System.out.println();
-		for(Person p : res) System.out.println(p.toPlotString());
+		printToPlot(persons,"persons.dat");
+		printToPlot(toppersons,"toppersons.dat");
+		printToPlot(cands,"cands.dat");
+		printToPlot(res,"res.dat");
 
 	}
 	
@@ -99,5 +98,18 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		new Main();
+	}
+
+	private void printToPlot(ArrayList<Person> persons, String file){
+		try {
+			PrintWriter writer = new PrintWriter(file,"UTF-8");
+			for(Person p: persons)writer.write(p.toPlotString()+"\n");
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -18,14 +18,15 @@ public class DiversePersonSelection {
         double [][] distances = new double[persons.size()][persons.size()];
         for (int i = 0; i < persons.size(); i++) {
             double maxDist = 0.0;
-            for (int j = 0; j < persons.size(); j++){
-                double tmpDist = new CosineSimilarity().cosineSimilarity(persons.get(i).toArray(), persons.get(j).toArray());
-                if(tmpDist < maxDist){
-                    maxDist = tmpDist;
-                    p1 = i;
-                    p2 = j;
-                }
-                distances[i][j] = tmpDist;
+            for (int j = i + 1; j < persons.size(); j++){
+                    double tmpDist = new CosineSimilarity().cosineSimilarity(persons.get(i).toArray(), persons.get(j).toArray());
+                    if (tmpDist < maxDist) {
+                        maxDist = tmpDist;
+                        p1 = i;
+                        p2 = j;
+                    }
+                    distances[i][j] = tmpDist;
+
             }
         }
         // add persons with greatest distance

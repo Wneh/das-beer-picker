@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class createRandomPrefs {
 	
-	public static final int COUNTER = 1000;
+	public static final int COUNTER = 10;
 	public static final int PERSON_COUNTER = 1000;
 
 	public static void main(String args[]){

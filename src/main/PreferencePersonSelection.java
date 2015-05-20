@@ -23,10 +23,11 @@ public class PreferencePersonSelection {
             for (int j = 0; j < persons.size(); j++) {
                 double [] weights = calculateWeightedValues(persons.get(j));
                 double sum = weights[0]*prefs.get(i).pref1 + weights[1]*prefs.get(i).pref2 + weights[2]*prefs.get(i).pref3;
-               // double sum = persons.get(j).age*prefs.get(i).pref1 +persons.get(j).length*prefs.get(i).pref2 + persons.get(j).weight*prefs.get(i).pref3;
+                //double sum = persons.get(j).age*prefs.get(i).pref1 +persons.get(j).length*prefs.get(i).pref2 + persons.get(j).weight*prefs.get(i).pref3;
                 sums.add(new PersonWrapper(persons.get(j),sum));
             }
             Collections.sort(sums);
+            Collections.reverse(sums);
             for (int j = 0; j < k; j++) {
                 result.add(sums.get(j).person);
             }
@@ -38,9 +39,9 @@ public class PreferencePersonSelection {
     public double [] calculateWeightedValues(Person person){
         double [] weights = new double[3];
 
-        double a = 100 - (Math.abs(IDEAL_AGE - person.age) * (100/47));
-        double l = 100 - (Math.abs(IDEAL_LENGTH - person.length) * (100/60));
-        double w = 100 - (Math.abs(IDEAL_WEIGHT - person.weight) * (100/70));
+        double a = Math.pow(2,(10 - Math.abs(IDEAL_AGE - person.age)/5));
+        double l = Math.pow(2,(10 - Math.abs(IDEAL_LENGTH - person.length)/6));
+        double w = Math.pow(2,(10 - Math.abs(IDEAL_WEIGHT - person.weight)/7));
 
         weights[0] = a;
         weights[1] = l;
