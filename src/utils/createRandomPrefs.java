@@ -23,18 +23,17 @@ public class createRandomPrefs {
 	public static final int PERSON_MIN_WEIGHT = 50;
 	public static final int PERSON_MAX_WEIGHT = 120;
 
-	public static void main(String args[]){
-		
+	public createRandomPrefs(){
 		DatabaseConnection c = new DatabaseConnection();
-		
+
 		Connection connection = c.getConnection();
-		
+
 		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,3);
-		
+
 		createTable(connection);
-		
+
 		insertPrefs(connection,data);
-		
+
 		createPersons(connection);
 	}
 	
@@ -72,7 +71,6 @@ public class createRandomPrefs {
 				System.err.println("SUM IS NOT 1 FOR ROW");
 				System.err.println(row);
 			}
-			System.out.println(row);
 			long seed = System.nanoTime();
 			Collections.shuffle(row, new Random(seed));
 			rows.add(row);

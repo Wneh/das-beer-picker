@@ -3,13 +3,18 @@ package main;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
+
+	private final int MENU_EXIT = 0;
+	private final int MENU_RUN = 1;
+	private final int MENU_RESET_DATABASE = 2;
+	private final int MENU_CREATE_RANDOM_DATABASE = 3;
+
+
 
 	/**
 	 * Main loop is executed from where.
@@ -17,31 +22,47 @@ public class Main {
 	 */
 	public Main(){
 		Connection connection = new utils.DatabaseConnection().getConnection();
-		ArrayList<Person> persons = loadPersons(connection);
-		//System.out.println(persons);
-		ArrayList<Prefs> prefs = loadPrefs(connection);
-		//System.out.println(prefs);
-		double sum1 = 0, sum2 = 0, sum3 = 0;
-		for(Prefs p: prefs){
-			sum1+=p.pref1;
-			sum2+=p.pref2;
-			sum3+=p.pref3;
+
+		Scanner input = new Scanner(System.in);
+		ArrayList<Person> persons;
+		ArrayList<Prefs> prefs;
+		int i = 0;
+		printMenu();
+		while (true){
+			switch (input.nextInt()){
+				case MENU_EXIT: return;
+				case MENU_RUN:
+					System.out.println("Running... ");
+					persons = loadPersons(connection);
+					prefs = loadPrefs(connection);
+					ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
+					ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,10);
+					ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands, 5);
+					System.out.println("Writing results... ");
+					printToPlot(persons,"persons.dat");
+					printToPlot(toppersons,"toppersons.dat");
+					printToPlot(cands,"cands.dat");
+					printToPlot(res, "res.dat");
+					System.out.println("Done!");
+					break;
+				case MENU_RESET_DATABASE:
+					dropTables(connection);
+					break;
+				case MENU_CREATE_RANDOM_DATABASE:
+					new utils.createRandomPrefs();
+					break;
+				default:return;
+			}
+			printMenu();
 		}
-		System.out.println(sum1+" "+sum2+" "+sum3);
-
-		ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
-		System.out.println("Toppersons size: "+toppersons.size());
-		System.out.println(toppersons);
-		ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,10);
-		System.out.println("Candidates: "+cands);
-		ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands,5);
-		System.out.println("Res: "+res);
-
-		printToPlot(persons,"persons.dat");
-		printToPlot(toppersons,"toppersons.dat");
-		printToPlot(cands,"cands.dat");
-		printToPlot(res,"res.dat");
-
+	}
+	private void printMenu(){
+		System.out.println();
+		System.out.println("Menu:");
+		System.out.println("1: Run");
+		System.out.println("2: Reset Database");
+		System.out.println("3: Create Random Database");
+		System.out.println("0: Exit");
 	}
 	
 	/**
@@ -112,4 +133,24 @@ public class Main {
 		}
 
 	}
+
+	public void dropTables(Connection connection){
+		PreparedStatement ps;
+		try {
+			ps = connection.prepareStatement("DROP TABLE persons");
+			ps.executeUpdate();
+			System.out.println("Dropped table persons");
+			ps = connection.prepareStatement("DROP TABLE prefs");
+			ps.executeUpdate();
+			System.out.println("Dropped table prefs");
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+
+
 }
