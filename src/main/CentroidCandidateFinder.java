@@ -21,6 +21,13 @@ public class CentroidCandidateFinder {
         return new ArrayList<Person>(persons.subList(0,limit));
     }
 
+    /**
+     * Calculate the abosule centroid vector for all the 
+     * persons that is given as input.
+     * 
+     * @param persons
+     * @return ArrayList<Integer> each index is one dimension.
+     */
     private ArrayList<Integer> calculateAbsoluteCentroid(ArrayList<Person> persons){
         ArrayList<Integer> centroid = new ArrayList<Integer>();
         int a = 0, l = 0, w = 0;
@@ -35,12 +42,26 @@ public class CentroidCandidateFinder {
         return centroid;
     }
 
+    /**
+     * Calculates the cosine similarty between the two Persons
+     * The values is calculated from age, weight and length;
+     * 
+     * @param person1
+     * @param person2
+     * @return cosine score
+     */
     private Double cosineSimilarity(Person person1, Person person2){
         double [] p1 = person1.toArray();
         double [] p2 = person2.toArray();
         return new CosineSimilarity().cosineSimilarity(p1, p2);
     }
 
+    /**
+     * 
+     * 
+     * @param person
+     * @return
+     */
     public double [] calculateWeightedValues(Person person){
         double [] weights = new double[3];
 

@@ -1,7 +1,6 @@
 package main;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,8 +8,10 @@ import java.util.ArrayList;
 
 public class Main {
 
-
-
+	/**
+	 * Main loop is executed from where.
+	 * This is where the user makes all the decisions
+	 */
 	public Main(){
 		Connection connection = new utils.DatabaseConnection().getConnection();
 		ArrayList<Person> persons = loadPersons(connection);
@@ -33,6 +34,7 @@ public class Main {
 		ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands,5);
 		System.out.println("Res: "+res);
 
+
 		for(Person p : persons) System.out.println(p.toPlotString());
 		System.out.println();
 		for(Person p : toppersons) System.out.println(p.toPlotString());
@@ -43,6 +45,13 @@ public class Main {
 
 	}
 	
+	/**
+	 * Loads all preferences from the database and return it in
+	 * an arraylist
+	 * 
+	 * @param connection
+	 * @return
+	 */
 	public ArrayList<Prefs> loadPrefs(Connection connection){
 		ArrayList<Prefs> result = new ArrayList<Prefs>();
 		String getStatement = "SELECT * FROM prefs;";
@@ -60,6 +69,13 @@ public class Main {
 		return result;
 	}
 	
+	/**
+	 * Loads all people from the the database and return it in a
+	 * arraylist of Person objects
+	 * 
+	 * @param connection
+	 * @return
+	 */
 	public ArrayList<Person> loadPersons(Connection connection){
 		ArrayList<Person> result = new ArrayList<Person>();
 		String getStatement = "SELECT * FROM persons;";
@@ -76,16 +92,11 @@ public class Main {
 		}	
 		return result;
 	}
-
-	public void testing(){
-		ArrayList<Person> persons = new ArrayList<Person>();
-		//Person p1 = new Person(0,)
-	}
-
-
-
-
-
+	
+	/**
+	 * Get this party started
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new Main();
 	}
