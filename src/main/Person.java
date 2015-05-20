@@ -33,4 +33,8 @@ public class Person implements Comparable<Person> {
 		else if (this.cosineScore > other.cosineScore) return 1;
 		return 0;
 	}
+
+	public String toPlotString(){
+		return age + " " + length + " " + weight+ "";
+	}
 }

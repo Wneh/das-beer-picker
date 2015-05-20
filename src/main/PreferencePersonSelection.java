@@ -38,9 +38,9 @@ public class PreferencePersonSelection {
     public double [] calculateWeightedValues(Person person){
         double [] weights = new double[3];
 
-        double a = 10 - (Math.abs(IDEAL_AGE - person.age) / 5);
-        double l = 10 - (Math.abs(IDEAL_LENGTH - person.length) / 6);
-        double w = 10 - (Math.abs(IDEAL_WEIGHT - person.weight) / 7);
+        double a = 100 - (Math.abs(IDEAL_AGE - person.age) * (100/47));
+        double l = 100 - (Math.abs(IDEAL_LENGTH - person.length) * (100/60));
+        double w = 100 - (Math.abs(IDEAL_WEIGHT - person.weight) * (100/70));
 
         weights[0] = a;
         weights[1] = l;

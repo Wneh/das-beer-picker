@@ -15,6 +15,6 @@ public class Prefs {
 	}
 	
 	public String toString(){
-		return "id: "+id + ", pref1: " + pref1 + ", pref2: " + pref2 + ", pref3: " + pref3;
+		return "id: "+id + ", pref1: " + pref1 + ", pref2: " + pref2 + ", pref3: " + pref3+"\n";
 	}
 }

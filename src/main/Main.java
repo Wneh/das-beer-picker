@@ -17,6 +17,14 @@ public class Main {
 		//System.out.println(persons);
 		ArrayList<Prefs> prefs = loadPrefs(connection);
 		//System.out.println(prefs);
+		double sum1 = 0, sum2 = 0, sum3 = 0;
+		for(Prefs p: prefs){
+			sum1+=p.pref1;
+			sum2+=p.pref2;
+			sum3+=p.pref3;
+		}
+		System.out.println(sum1+" "+sum2+" "+sum3);
+
 		ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
 		System.out.println("Toppersons size: "+toppersons.size());
 		System.out.println(toppersons);
@@ -25,7 +33,13 @@ public class Main {
 		ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands,5);
 		System.out.println("Res: "+res);
 
-
+		for(Person p : persons) System.out.println(p.toPlotString());
+		System.out.println();
+		for(Person p : toppersons) System.out.println(p.toPlotString());
+		System.out.println();
+		for(Person p : cands) System.out.println(p.toPlotString());
+		System.out.println();
+		for(Person p : res) System.out.println(p.toPlotString());
 
 	}
 	
