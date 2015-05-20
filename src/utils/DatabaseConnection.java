@@ -4,9 +4,22 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Creates a database connection
+ * @author user
+ *
+ */
 public class DatabaseConnection {
 	
 	private Connection connection = null;
+	
+	/*
+	 * Varaibles used for accessing the database
+	 */
+	private static final String URL = "127.0.0.1:5432";
+	private static final String DATABASE_NAME = "mdb";
+	private static final String USER_NAME = "postgres";
+	private static final String PASSWORD = "root";
 
 	public DatabaseConnection(){
 		// Do nothing at the moment
@@ -27,7 +40,7 @@ public class DatabaseConnection {
 		Connection connection = null;
 		
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/mdb","postgres","root");
+			connection = DriverManager.getConnection("jdbc:postgresql://"+URL+"/"+DATABASE_NAME,USER_NAME,PASSWORD);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
