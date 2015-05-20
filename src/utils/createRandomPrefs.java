@@ -7,10 +7,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * External program that generates some random test data
+ * and insert it into the database
+ */
 public class createRandomPrefs {
 	
 	public static final int COUNTER = 10;
 	public static final int PERSON_COUNTER = 1000;
+	
+	public static final int PERSON_MIN_AGE = 18;
+	public static final int PERSON_MAX_AGE = 65;
+	public static final int PERSON_MIN_LENGTH = 140;
+	public static final int PERSON_MAX_LENGTH = 200;
+	public static final int PERSON_MIN_WEIGHT = 50;
+	public static final int PERSON_MAX_WEIGHT = 120;
 
 	public static void main(String args[]){
 		
@@ -70,6 +81,12 @@ public class createRandomPrefs {
 		return rows;
 	}
 	
+	/**
+	 * Inserts preferences into the database table prefs
+	 * 
+	 * @param connection database connection
+	 * @param data Preferences that is about to be inserted
+	 */
 	private static void insertPrefs(Connection connection, ArrayList<ArrayList<Double>> data){
 		String insertString = "INSERT INTO prefs VALUES(?,?,?,?)";
 		
@@ -83,7 +100,6 @@ public class createRandomPrefs {
 				insertPrefs.setDouble(3,row.get(1));
 				insertPrefs.setDouble(4,row.get(2));
 				insertPrefs.executeUpdate();
-//				connection.commit();
 				counter++;
 			}
 		} catch (SQLException e) {
@@ -110,6 +126,14 @@ public class createRandomPrefs {
 		}
 	}
 	
+	/**
+	 * Inserts random generated persons into the person table
+	 * in the database
+	 * 
+	 * The ranges for the persons is global class varaibles
+	 * 
+	 * @param connection
+	 */
 	private static void createPersons(Connection connection){
 		createTablePersons(connection);
 		String insertString = "INSERT INTO persons VALUES(?,?,?,?)";
@@ -119,9 +143,9 @@ public class createRandomPrefs {
 			insertPrefs = connection.prepareStatement(insertString);
 			for(int i = 0; i < PERSON_COUNTER; i++){
 				insertPrefs.setInt(1,i);
-				insertPrefs.setInt(2,randomNumber(18,65));
-				insertPrefs.setInt(3,randomNumber(140,200));
-				insertPrefs.setInt(4,randomNumber(50,120));
+				insertPrefs.setInt(2,randomNumber(PERSON_MIN_AGE,PERSON_MAX_AGE));
+				insertPrefs.setInt(3,randomNumber(PERSON_MIN_LENGTH,PERSON_MAX_LENGTH));
+				insertPrefs.setInt(4,randomNumber(PERSON_MIN_WEIGHT,PERSON_MAX_WEIGHT));
 				insertPrefs.executeUpdate();
 			}
 		} catch (SQLException e) {
@@ -130,6 +154,12 @@ public class createRandomPrefs {
 		}
 	}
 	
+	/**
+	 * Creates the person table in the database
+	 * It only creates if no table with the name already exists
+	 * 
+	 * @param connection
+	 */
 	private static void createTablePersons(Connection connection){
 		PreparedStatement ps;
 		try {
