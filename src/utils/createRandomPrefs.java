@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class createRandomPrefs {
@@ -61,7 +62,10 @@ public class createRandomPrefs {
 				System.err.println(row);
 			}
 			System.out.println(row);
+			long seed = System.nanoTime();
+			Collections.shuffle(row, new Random(seed));
 			rows.add(row);
+			
 		}
 		return rows;
 	}
