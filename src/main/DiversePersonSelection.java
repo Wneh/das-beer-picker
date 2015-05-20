@@ -17,7 +17,7 @@ public class DiversePersonSelection {
         int p1 = 0, p2 = 0;
         double [][] distances = new double[persons.size()][persons.size()];
         for (int i = 0; i < persons.size(); i++) {
-            double maxDist = 0.0;
+            double maxDist = Double.MAX_VALUE;
             for (int j = i + 1; j < persons.size(); j++){
                     double tmpDist = new CosineSimilarity().cosineSimilarity(persons.get(i).toArray(), persons.get(j).toArray());
                     if (tmpDist < maxDist) {
@@ -30,6 +30,8 @@ public class DiversePersonSelection {
             }
         }
         // add persons with greatest distance
+        System.out.println("p1: " + p1);
+        System.out.println("p2: " + p2);
         result.add(persons.get(p1));
         result.add(persons.get(p2));
         HashSet<Integer> taken = new HashSet<Integer>();
