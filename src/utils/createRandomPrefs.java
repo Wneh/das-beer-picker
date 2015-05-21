@@ -35,6 +35,8 @@ public class createRandomPrefs {
 		insertPrefs(connection,data);
 
 		createPersons(connection);
+		
+		createTableBeer(connection);
 	}
 	
 	/**
@@ -169,7 +171,25 @@ public class createRandomPrefs {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	}
+	
+	/**
+	 * Creates the person table in the database
+	 * It only creates if no table with the name already exists
+	 * 
+	 * @param connection
+	 */
+	private static void createTableBeer(Connection connection){
+		PreparedStatement ps;
+		try {
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS beer(beer_id SERIAL NOT NULL PRIMARY KEY,name varchar(250), beska double precision, fyllighet double precision, sotma double precision, price double precision)");
+			ps.executeUpdate();
+			ps.close();
+			System.out.println("Created prefs table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private static int randomNumber(int min, int max){
