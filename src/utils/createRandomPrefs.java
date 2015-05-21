@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+
+import main.Product;
 
 /**
  * External program that generates some random test data
@@ -37,6 +40,8 @@ public class createRandomPrefs {
 		createPersons(connection);
 		
 		createTableBeer(connection);
+		
+		fillBeerTable(connection);
 	}
 	
 	/**
@@ -135,7 +140,6 @@ public class createRandomPrefs {
 	 * @param connection
 	 */
 	private static void createPersons(Connection connection){
-		createTablePersons(connection);
 		String insertString = "INSERT INTO persons VALUES(?,?,?,?)";
 
 		PreparedStatement insertPrefs = null;
@@ -186,6 +190,42 @@ public class createRandomPrefs {
 			ps.executeUpdate();
 			ps.close();
 			System.out.println("Created prefs table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static void fillBeerTable(Connection connection){
+		ArrayList<Product> toInsert = new ArrayList<Product>();
+		
+		toInsert.add(new Product(1,"Sofiero Original", new ArrayList<Double>(Arrays.asList(0.3, 0.4, 0.1,30.0))));
+		toInsert.add(new Product(2,"Mariestads Export", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.1,43.33))));
+		toInsert.add(new Product(3,"Norrlands Guld Export", new ArrayList<Double>(Arrays.asList(0.4, 0.4, 0.15,27.0))));
+		toInsert.add(new Product(4,"Falcon Export", new ArrayList<Double>(Arrays.asList(0.37, 0.37, 0.05,30.0))));
+		toInsert.add(new Product(5,"Fem komma tvåan", new ArrayList<Double>(Arrays.asList(0.45, 0.45, 0.2,25.46))));
+		toInsert.add(new Product(6,"Stockholm Festival", new ArrayList<Double>(Arrays.asList(0.4, 0.4, 0.05,23.40))));
+		toInsert.add(new Product(7,"Pripps Blå", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.15,33.03))));
+		toInsert.add(new Product(8,"Kung", new ArrayList<Double>(Arrays.asList(0.55, 0.55, 0.15,22.20))));
+		toInsert.add(new Product(9,"Sofiero Guld", new ArrayList<Double>(Arrays.asList(0.6, 0.7, 0.1,29.80))));
+		toInsert.add(new Product(10,"Smålands", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.05,27.88))));
+		
+		
+		
+		String insertString = "INSERT INTO beer VALUES(?,?,?,?,?,?)";
+
+		PreparedStatement insertPrefs = null;
+		try {
+			insertPrefs = connection.prepareStatement(insertString);
+			for(Product p : toInsert){
+				insertPrefs.setInt(1,p.id);
+				insertPrefs.setString(2,p.name);
+				insertPrefs.setDouble(3,p.attributes.get(0));
+				insertPrefs.setDouble(4,p.attributes.get(1));
+				insertPrefs.setDouble(5,p.attributes.get(2));
+				insertPrefs.setDouble(6,p.attributes.get(3));
+				insertPrefs.executeUpdate();
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
