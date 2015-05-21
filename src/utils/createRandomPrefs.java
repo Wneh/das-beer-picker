@@ -202,6 +202,15 @@ public class createRandomPrefs {
 		toInsert.add(new Product(1,"Sofiero Original", new ArrayList<Double>(Arrays.asList(0.3, 0.4, 0.1,30.0))));
 		toInsert.add(new Product(2,"Mariestads Export", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.1,43.33))));
 		toInsert.add(new Product(3,"Norrlands Guld Export", new ArrayList<Double>(Arrays.asList(0.4, 0.4, 0.15,27.0))));
+		toInsert.add(new Product(4,"Falcon Export", new ArrayList<Double>(Arrays.asList(0.37, 0.37, 0.05,30.0))));
+		toInsert.add(new Product(5,"Fem komma tvåan", new ArrayList<Double>(Arrays.asList(0.45, 0.45, 0.2,25.46))));
+		toInsert.add(new Product(6,"Stockholm Festival", new ArrayList<Double>(Arrays.asList(0.4, 0.4, 0.05,23.40))));
+		toInsert.add(new Product(7,"Pripps Blå", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.15,33.03))));
+		toInsert.add(new Product(8,"Kung", new ArrayList<Double>(Arrays.asList(0.55, 0.55, 0.15,22.20))));
+		toInsert.add(new Product(9,"Sofiero Guld", new ArrayList<Double>(Arrays.asList(0.6, 0.7, 0.1,29.80))));
+		toInsert.add(new Product(10,"Smålands", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.05,27.88))));
+		
+		
 		
 		String insertString = "INSERT INTO beer VALUES(?,?,?,?,?,?)";
 
