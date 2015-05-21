@@ -23,4 +23,11 @@ public class Customer {
         }
         return arr;
     }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(double d: preferences)sb.append(d+", ");
+        return "id: " +id+", name: "+name+", Att: "+sb.toString()+ "\n";
+    }
+
 }

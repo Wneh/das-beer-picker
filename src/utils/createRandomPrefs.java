@@ -16,8 +16,8 @@ import main.Product;
  */
 public class createRandomPrefs {
 	
-	public static final int COUNTER = 10;
-	public static final int PERSON_COUNTER = 1000;
+	public static final int COUNTER = 100;
+	public static final int PERSON_COUNTER = 100;
 	
 	public static final int PERSON_MIN_AGE = 18;
 	public static final int PERSON_MAX_AGE = 65;
@@ -31,13 +31,13 @@ public class createRandomPrefs {
 
 		Connection connection = c.getConnection();
 
-		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,3);
+		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,4);
 
 		createTable(connection);
 
 		insertPrefs(connection,data);
 
-		createPersons(connection);
+		//createPersons(connection);
 		
 		createTableBeer(connection);
 		
@@ -93,7 +93,7 @@ public class createRandomPrefs {
 	 * @param data Preferences that is about to be inserted
 	 */
 	private static void insertPrefs(Connection connection, ArrayList<ArrayList<Double>> data){
-		String insertString = "INSERT INTO prefs VALUES(?,?,?,?)";
+		String insertString = "INSERT INTO prefs VALUES(?,?,?,?,?)";
 		
 		PreparedStatement insertPrefs = null;
 		try {
@@ -104,6 +104,7 @@ public class createRandomPrefs {
 				insertPrefs.setDouble(2,row.get(0));
 				insertPrefs.setDouble(3,row.get(1));
 				insertPrefs.setDouble(4,row.get(2));
+				insertPrefs.setDouble(5,row.get(3));
 				insertPrefs.executeUpdate();
 				counter++;
 			}
@@ -121,7 +122,7 @@ public class createRandomPrefs {
 	private static void createTable(Connection connection){
 		PreparedStatement ps;
 		try {
-			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_id SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision)");
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_id SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision, pref4 double precision)");
 			ps.executeUpdate();
 			ps.close();
 			System.out.println("Created prefs table");

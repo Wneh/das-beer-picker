@@ -92,22 +92,34 @@ public class MarketAnalyzer {
         Customer idealCustomer = generateIdealCustomer(product);
         HashMap<Double,Customer> customerMap = new HashMap<Double, Customer>();
         ArrayList<Double> cosines = new ArrayList<Double>();
+        System.out.println(customerGroup.customers);
         for (Customer c: customerGroup.customers){
+            System.out.println("ideal: "+idealCustomer);
             double cosine = cosineSimilarity(idealCustomer, c);
+            System.out.println(cosine);
             cosines.add(cosine);
             customerMap.put(cosine,c);
         }
+        System.out.println(cosines);
         Collections.sort(cosines);
         Collections.reverse(cosines);
         ArrayList<Customer> candidates = new ArrayList<Customer>();
         for (int i = 0; i < k; i++) {
+            System.out.println("adding: "+customerMap.get(cosines.get(i)));
             candidates.add(customerMap.get(cosines.get(i)));
         }
         return candidates;
     }
 
+    /**
+     * TODO:
+     * THIS IS WRONG
+     * @param product
+     * @return
+     */
     private Customer generateIdealCustomer(Product product) {
         double[] weDoubles = getWeightedAttributes(product);
+        for (double d: weDoubles) System.out.print(d+" ");
         double sum = 0;
         for (double d: weDoubles)sum += d;
         ArrayList<Double> preferences = new ArrayList<Double>();
@@ -122,6 +134,10 @@ public class MarketAnalyzer {
             weights[i] = 10 * (distanceFromAvg/productGroup.getMaxAttributeValue(i));
         }
         return weights;
+    }
+
+    public ArrayList<Product> getTopKProducts(int k) {
+        return getTopKProducts(productGroup.products,customerGroup.customers, k);
     }
 
     private class ProductWrapper implements Comparable<ProductWrapper>{
