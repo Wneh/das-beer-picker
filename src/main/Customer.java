@@ -15,4 +15,12 @@ public class Customer {
         this.id = id;
         this.name = name;
     }
+
+    public double[] toArray(){
+        double[] arr = new double[preferences.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = preferences.get(i);
+        }
+        return arr;
+    }
 }

@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -13,6 +15,7 @@ public class Main {
 	private final int MENU_RUN = 1;
 	private final int MENU_RESET_DATABASE = 2;
 	private final int MENU_CREATE_RANDOM_DATABASE = 3;
+	private final int MENU_RUN_NEW = 4;
 
 
 
@@ -51,6 +54,11 @@ public class Main {
 				case MENU_CREATE_RANDOM_DATABASE:
 					new utils.createRandomPrefs();
 					break;
+				case MENU_RUN_NEW:
+					ArrayList<Product> products = loadProducts(connection);
+					ArrayList<Customer> customers = loadCustomers(connection);
+					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
+					break;
 				default:return;
 			}
 			printMenu();
@@ -62,6 +70,7 @@ public class Main {
 		System.out.println("1: Run");
 		System.out.println("2: Reset Database");
 		System.out.println("3: Create Random Database");
+		System.out.println("4: Run new");
 		System.out.println("0: Exit");
 	}
 	
@@ -87,6 +96,47 @@ public class Main {
 			e.printStackTrace();
 		}	
 		return result;
+	}
+
+	public ArrayList<Product> loadProducts(Connection connection){
+		ArrayList<Product> result = new ArrayList<Product>();
+		String getStatement = "SELECT * FROM beer;";
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(getStatement);
+			while(rs.next()){
+				Product p = new Product(rs.getInt("beer_id"),rs.getString("name"), new ArrayList<Double>(Arrays.asList(rs.getDouble("beska"),rs.getDouble("fyllighet"),rs.getDouble("sotma"),rs.getDouble("price"))));
+				result.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+
+	public ArrayList<Customer> loadCustomers(Connection connection){
+		ArrayList<Prefs> result = new ArrayList<Prefs>();
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+		String getStatement = "SELECT * FROM prefs;";
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(getStatement);
+			while(rs.next()){
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
+				result.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		for(Prefs p : result){
+			customers.add(new Customer(p.toArrayList(),p.id,p.id+""));
+		}
+		return customers;
 	}
 	
 	/**
