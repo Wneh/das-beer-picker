@@ -192,6 +192,10 @@ public class createRandomPrefs {
 		}
 	}
 	
+	private static void fillBeerTable(Connection connection){
+		
+	}
+	
 	private static int randomNumber(int min, int max){
 		Random r = new Random();
 		return r.nextInt((max - min) + 1) + min;
