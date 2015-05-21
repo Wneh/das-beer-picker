@@ -143,6 +143,9 @@ public class Main {
 			ps = connection.prepareStatement("DROP TABLE prefs");
 			ps.executeUpdate();
 			System.out.println("Dropped table prefs");
+			ps = connection.prepareStatement("DROP TABLE beer");
+			ps.executeUpdate();
+			System.out.println("Dropped table beer");
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
