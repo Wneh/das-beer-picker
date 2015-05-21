@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Prefs {
 	
 	public int id;
@@ -16,5 +18,13 @@ public class Prefs {
 	
 	public String toString(){
 		return "id: "+id + ", pref1: " + pref1 + ", pref2: " + pref2 + ", pref3: " + pref3+"\n";
+	}
+
+	public ArrayList<Double> toArrayList(){
+		ArrayList<Double> arr = new ArrayList<Double>();
+		arr.add(pref1);
+		arr.add(pref2);
+		arr.add(pref3);
+		return arr;
 	}
 }
