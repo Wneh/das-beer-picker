@@ -15,4 +15,12 @@ public class Product {
         this.name = name;
         this.attributes = attributes;
     }
+
+    public double[] toArray(){
+        double[] arr = new double[attributes.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = attributes.get(i);
+        }
+        return arr;
+    }
 }

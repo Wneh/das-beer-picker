@@ -17,8 +17,6 @@ public class PreferencePersonSelection {
         HashSet<Person> result = new HashSet<Person>();
 
         for (int i = 0; i < prefs.size(); i++) {
-            double max = 0;
-            int cand = -1;
             ArrayList<PersonWrapper> sums = new ArrayList<PersonWrapper>();
             for (int j = 0; j < persons.size(); j++) {
                 double [] weights = calculateWeightedValues(persons.get(j));
