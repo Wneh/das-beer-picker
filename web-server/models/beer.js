@@ -14,6 +14,7 @@ exports.getAllBeer = function(callback){
 		
 		//Run the select query
 		client.query('SELECT * FROM beer', function (err, result) {
+			done();
 			if(err){
 				console.log("Error while running select query");
 				console.log(err);

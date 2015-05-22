@@ -1,6 +1,11 @@
 var async = require('async');
+var voteModel = require('./../models/vote');
 
 exports.vote = function(req,res){
+
+
+	var userName = req.body.userName;
+
 	/*
 	 * Each named form input is stored as a key value pair.
 	 * If the user has checked a checkbox then the name of 
@@ -15,13 +20,27 @@ exports.vote = function(req,res){
 		if(item === 'userName'){
 			//Do nothing
 			return callback();
-		} 
-    	console.log(item); // print the key
-    	callback(); // tell async that the iterator has completed
+		}
 
+		/*
+		 * Insert the vote into the database
+		 * and hide any errors for the user.
+		 */
+		voteModel.insertVote(userName, item, function (err){
+			process.nextTick(function() {   
+				if(err){
+					console.log(err);
+				}
+				callback(err);
+    		});
+		});
 	},
 	function (err) {
-    	console.log('iterating done');
-    	res.json(req.body);
+		if(err){
+			console.log(err);
+			res.status(500).send(err);
+		} else {
+			res.status(200).send("Vote success!");
+		}
 	});
 };
