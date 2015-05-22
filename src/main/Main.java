@@ -47,8 +47,15 @@ public class Main {
 					ArrayList<Product> products = loadProducts(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
-					System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
-					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
+					System.out.println(products);
+					for(Customer c : customers){
+						System.out.println(c);
+						System.out.println(marketAnalyzer.topP(c));
+						System.out.println("=================================");
+					}
+
+					//System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
+					//System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
 					break;
 				case GET_VOTES:
 					break;
@@ -82,7 +89,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -119,7 +126,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
 				result.add(p);
 			}
 		} catch (SQLException e) {

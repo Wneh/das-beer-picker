@@ -31,7 +31,7 @@ public class createRandomPrefs {
 
 		Connection connection = c.getConnection();
 
-		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,4);
+		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,3);
 
 		createTable(connection);
 
@@ -95,7 +95,7 @@ public class createRandomPrefs {
 	 * @param data Preferences that is about to be inserted
 	 */
 	private static void insertPrefs(Connection connection, ArrayList<ArrayList<Double>> data){
-		String insertString = "INSERT INTO prefs VALUES(?,?,?,?,?)";
+		String insertString = "INSERT INTO prefs VALUES(?,?,?,?)";
 		
 		PreparedStatement insertPrefs = null;
 		try {
@@ -106,7 +106,6 @@ public class createRandomPrefs {
 				insertPrefs.setDouble(2,row.get(0));
 				insertPrefs.setDouble(3,row.get(1));
 				insertPrefs.setDouble(4,row.get(2));
-				insertPrefs.setDouble(5,row.get(3));
 				insertPrefs.executeUpdate();
 				counter++;
 			}
@@ -124,7 +123,7 @@ public class createRandomPrefs {
 	private static void createTable(Connection connection){
 		PreparedStatement ps;
 		try {
-			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_id SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision, pref4 double precision)");
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS prefs(prefs_id SERIAL NOT NULL PRIMARY KEY,pref1 double precision, pref2 double precision, pref3 double precision)");
 			ps.executeUpdate();
 			ps.close();
 			System.out.println("Created prefs table");
@@ -133,33 +132,7 @@ public class createRandomPrefs {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Inserts random generated persons into the person table
-	 * in the database
-	 * 
-	 * The ranges for the persons is global class varaibles
-	 * 
-	 * @param connection
-	 */
-	private static void createPersons(Connection connection){
-		String insertString = "INSERT INTO persons VALUES(?,?,?,?)";
 
-		PreparedStatement insertPrefs = null;
-		try {
-			insertPrefs = connection.prepareStatement(insertString);
-			for(int i = 0; i < PERSON_COUNTER; i++){
-				insertPrefs.setInt(1,i);
-				insertPrefs.setInt(2,randomNumber(PERSON_MIN_AGE,PERSON_MAX_AGE));
-				insertPrefs.setInt(3,randomNumber(PERSON_MIN_LENGTH,PERSON_MAX_LENGTH));
-				insertPrefs.setInt(4,randomNumber(PERSON_MIN_WEIGHT,PERSON_MAX_WEIGHT));
-				insertPrefs.executeUpdate();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * Creates the person table in the database
@@ -231,7 +204,9 @@ public class createRandomPrefs {
 		toInsert.add(new Product(8,"Kung", new ArrayList<Double>(Arrays.asList(0.55, 0.55, 0.15,22.20))));
 		toInsert.add(new Product(9,"Sofiero Guld", new ArrayList<Double>(Arrays.asList(0.6, 0.7, 0.1,29.80))));
 		toInsert.add(new Product(10,"Smålands", new ArrayList<Double>(Arrays.asList(0.5, 0.5, 0.05,27.88))));
-		
+		toInsert.add(new Product(11,"ID 0 special", new ArrayList<Double>(Arrays.asList(0.03, 0.74, 0.23,30.88))));
+
+
 		
 		
 		String insertString = "INSERT INTO beer VALUES(?,?,?,?,?,?)";
