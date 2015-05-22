@@ -35,7 +35,7 @@ public class createRandomPrefs {
 
 		createTable(connection);
 
-		insertPrefs(connection,data);
+		//insertPrefs(connection,data);
 
 		//createPersons(connection);
 		

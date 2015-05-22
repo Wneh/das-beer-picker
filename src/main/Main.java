@@ -29,6 +29,7 @@ public class Main {
 
 		Scanner input = new Scanner(System.in);
 		ArrayList<Prefs> prefs;
+		ArrayList<VotingFactory> votes;
 		int i = 0;
 		printMenu();
 		while (true){
@@ -58,6 +59,7 @@ public class Main {
 					//System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
 					break;
 				case GET_VOTES:
+					loadVotes(connection);
 					break;
 				default:return;
 			}
@@ -71,9 +73,49 @@ public class Main {
 		System.out.println("2: Reset Database");
 		System.out.println("3: Create Random Database");
 		System.out.println("4: Run new");
+		System.out.println("5: Read votes");
 		System.out.println("0: Exit");
 	}
-	
+
+	/**
+	 * Loads all preferences from the database and return it in
+	 * an arraylist
+	 *
+	 * @param connection
+	 * @return
+	 */
+	public void loadVotes(Connection connection){
+		ArrayList<VotingFactory> result = new ArrayList<VotingFactory>();
+		String getStatement = "select beska, sotma, fyllighet from votes, beer where beer.beer_id = votes.beer_id";
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(getStatement);
+			while(rs.next()){
+				VotingFactory vote = new VotingFactory(rs.getDouble("beska"),rs.getDouble("sotma"),rs.getDouble("fyllighet"));
+				result.add(vote);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		String insertStatement = "INSERT INTO prefs(prefs_id,pref1, pref2, pref3) VALUES(DEFAULT,?,?,?)";
+		PreparedStatement prepared = null;
+
+		try {
+			prepared = connection.prepareStatement(insertStatement);
+			for (VotingFactory votingFactory : result) {
+				prepared.setDouble(1, votingFactory.beska);
+				prepared.setDouble(2, votingFactory.sotma);
+				prepared.setDouble(3, votingFactory.fyllighet);
+				prepared.executeUpdate();
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Loads all preferences from the database and return it in
 	 * an arraylist
