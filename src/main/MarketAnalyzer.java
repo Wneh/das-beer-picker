@@ -9,8 +9,8 @@ import java.util.HashSet;
  * Created by Erik on 2015-05-21.
  */
 public class MarketAnalyzer {
-    private ProductGroup productGroup;
-    private CustomerGroup customerGroup;
+    public ProductGroup productGroup;
+    public CustomerGroup customerGroup;
 
     public MarketAnalyzer(ProductGroup productGroup, CustomerGroup customerGroup){
         this.customerGroup = customerGroup;
@@ -90,22 +90,18 @@ public class MarketAnalyzer {
 
     public ArrayList<Customer> getTopKCustomerCentroidCandidates(Product product, int k){
         Customer idealCustomer = generateIdealCustomer(product);
+        System.out.println("IDEAL CUSTOEMR: "+idealCustomer);
         HashMap<Double,Customer> customerMap = new HashMap<Double, Customer>();
         ArrayList<Double> cosines = new ArrayList<Double>();
-        System.out.println(customerGroup.customers);
         for (Customer c: customerGroup.customers){
-            System.out.println("ideal: "+idealCustomer);
             double cosine = cosineSimilarity(idealCustomer, c);
-            System.out.println(cosine);
             cosines.add(cosine);
             customerMap.put(cosine,c);
         }
-        System.out.println(cosines);
         Collections.sort(cosines);
         Collections.reverse(cosines);
         ArrayList<Customer> candidates = new ArrayList<Customer>();
         for (int i = 0; i < k; i++) {
-            System.out.println("adding: "+customerMap.get(cosines.get(i)));
             candidates.add(customerMap.get(cosines.get(i)));
         }
         return candidates;
@@ -119,7 +115,6 @@ public class MarketAnalyzer {
      */
     private Customer generateIdealCustomer(Product product) {
         double[] weDoubles = getWeightedAttributes(product);
-        for (double d: weDoubles) System.out.print(d+" ");
         double sum = 0;
         for (double d: weDoubles)sum += d;
         ArrayList<Double> preferences = new ArrayList<Double>();
