@@ -9,6 +9,7 @@ app.engine('jade', require('jade').__express);
 app.set('view engine','jade');
 app.set('views', __dirname + '/views');
 
+app.use(express.static('public'));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
