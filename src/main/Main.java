@@ -16,6 +16,7 @@ public class Main {
 	private final int MENU_RESET_DATABASE = 2;
 	private final int MENU_CREATE_RANDOM_DATABASE = 3;
 	private final int MENU_RUN_NEW = 4;
+	private final int GET_VOTES = 5;
 
 
 
@@ -48,6 +49,8 @@ public class Main {
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
 					System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
 					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
+					break;
+				case GET_VOTES:
 					break;
 				default:return;
 			}
