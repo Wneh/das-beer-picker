@@ -40,7 +40,8 @@ exports.vote = function(req,res){
 			console.log(err);
 			res.status(500).send(err);
 		} else {
-			res.status(200).send("Vote success!");
+			// res.status(200).send("Vote success!");
+			res.render('thanksVoting',{name: userName});
 		}
 	});
 };
