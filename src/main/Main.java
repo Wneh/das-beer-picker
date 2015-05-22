@@ -16,6 +16,7 @@ public class Main {
 	private final int MENU_RESET_DATABASE = 2;
 	private final int MENU_CREATE_RANDOM_DATABASE = 3;
 	private final int MENU_RUN_NEW = 4;
+	private final int GET_VOTES = 5;
 
 
 
@@ -51,6 +52,8 @@ public class Main {
 					printToFile("top.dat",top);
 					ArrayList<Product> div =marketAnalyzer.getKMostDiverseProducts(marketAnalyzer.getTopKProducts(5), 3);
 					printToFile("div.dat",div);
+					break;
+				case GET_VOTES:
 					break;
 				default:return;
 			}
