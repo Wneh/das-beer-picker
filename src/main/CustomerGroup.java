@@ -36,7 +36,6 @@ public class CustomerGroup {
                 maxValues = new double[nrOfCustomerPreferences];
                 minValues = new double[nrOfCustomerPreferences];
                 avgValues = new double[nrOfCustomerPreferences];
-
                 for (Customer c : customers) {
                     for (int i = 0; i < c.preferences.size(); i++) {
                         double attr = c.preferences.get(i);

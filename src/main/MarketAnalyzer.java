@@ -71,9 +71,9 @@ public class MarketAnalyzer {
         ArrayList<Customer> result = new ArrayList<Customer>();
         // calc distance between all customers
         int p1 = 0, p2 = 0;
+        double maxDist = Double.MAX_VALUE;
         double [][] distances = new double[customers.size()][customers.size()];
         for (int i = 0; i < customers.size(); i++) {
-            double maxDist = Double.MAX_VALUE;
             for (int j = i + 1; j < customers.size(); j++){
                 double tmpDist = new CosineSimilarity().cosineSimilarity(customers.get(i).toArray(), customers.get(j).toArray());
                 if (tmpDist < maxDist) {
@@ -165,12 +165,24 @@ public class MarketAnalyzer {
         return candidates;
     }
 
-    /**
-     * TODO:
-     * THIS IS WRONG
-     * @param product
-     * @return
-     */
+    public ArrayList<Product> getTopKProductCentroidCandidates(Customer customer, int k){
+        Product idealProduct = generateIdealProduct(customer);
+        HashMap<Double,Product> productMap = new HashMap<Double, Product>();
+        ArrayList<Double> cosines = new ArrayList<Double>();
+        for (Product p: productGroup.products){
+            double cosine = cosineSimilarity(idealProduct.toArray(), p.toArray());
+            cosines.add(cosine);
+            productMap.put(cosine,p);
+        }
+        Collections.sort(cosines);
+        Collections.reverse(cosines);
+        ArrayList<Product> candidates = new ArrayList<Product>();
+        for (int i = 0; i < k; i++) {
+            candidates.add(productMap.get(cosines.get(i)));
+        }
+        return candidates;
+    }
+
     private Customer generateIdealCustomer(Product product) {
         Customer top = new Customer();
         double min = 0;
@@ -182,6 +194,22 @@ public class MarketAnalyzer {
             if(sum < min){
                 min = sum;
                 top = c;
+            }
+        }
+        return top;
+    }
+
+    private Product generateIdealProduct(Customer customer) {
+        Product top = new Product();
+        double min = 0;
+        for (Product p : productGroup.products){
+            double sum = 0;
+            for (int i = 0; i < customer.preferences.size(); i++) {
+                sum += Math.abs(customer.preferences.get(i) - p.weightedAttributes.get(i));
+            }
+            if(sum < min){
+                min = sum;
+                top = p;
             }
         }
         return top;

@@ -17,6 +17,7 @@ public class Main {
 	private final int MENU_CREATE_RANDOM_DATABASE = 3;
 	private final int MENU_RUN_NEW = 4;
 	private final int GET_VOTES = 5;
+	private int RESULT_ID = 1;
 
 
 
@@ -52,6 +53,12 @@ public class Main {
 					printToFile("top.dat",top);
 					ArrayList<Product> div =marketAnalyzer.getKMostDiverseProducts(marketAnalyzer.getTopKProducts(5), 3);
 					printToFile("div.dat",div);
+					createResultTable(connection);
+
+					insertResult(connection, products, "all");
+					insertResult(connection,top,"top");
+					insertResult(connection,div,"div");
+
 					break;
 				case GET_VOTES:
 					break;
@@ -60,6 +67,39 @@ public class Main {
 			printMenu();
 		}
 	}
+	private void createResultTable(Connection connection){
+		System.out.println("HEJ");
+		PreparedStatement ps;
+		try {
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS results(id SERIAL NOT NULL PRIMARY KEY, x DOUBLE PRECISION , y DOUBLE PRECISION, z DOUBLE PRECISION, type VARCHAR(40))");
+			ps.executeUpdate();
+			ps.close();
+			System.out.println("Created results table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void insertResult(Connection connection,ArrayList<Product> products,String name) {
+		String insertString = "INSERT INTO results VALUES(?,?,?,?,?)";
+		PreparedStatement insertPrefs = null;
+		try {
+			insertPrefs = connection.prepareStatement(insertString);
+			for(Product p : products){
+				insertPrefs.setInt(1,RESULT_ID);
+				insertPrefs.setDouble(2,p.attributes.get(0));
+				insertPrefs.setDouble(3,p.attributes.get(1));
+				insertPrefs.setDouble(4,p.attributes.get(2));
+				insertPrefs.setString(5, name);
+				insertPrefs.executeUpdate();
+				RESULT_ID++;
+			}
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+
+	}
+
 	private void printMenu(){
 		System.out.println();
 		System.out.println("Menu:");
@@ -175,6 +215,10 @@ public class Main {
 			ps = connection.prepareStatement("DROP TABLE votes");
 			ps.executeUpdate();
 			System.out.println("Dropped table votes");
+
+			ps = connection.prepareStatement("DROP TABLE results");
+			ps.executeUpdate();
+			System.out.println("Dropped table results");
 			
 			ps.close();
 		} catch (SQLException e) {
