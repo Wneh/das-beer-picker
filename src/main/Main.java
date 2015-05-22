@@ -58,6 +58,9 @@ public class Main {
 					ArrayList<Product> products = loadProducts(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
+					System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
+					System.out.println(marketAnalyzer.getTopKProducts(1));
+					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.getTopKProducts(1).get(0),10));
 					break;
 				default:return;
 			}
@@ -89,7 +92,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -126,7 +129,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -187,8 +190,6 @@ public class Main {
 	public void dropTables(Connection connection){
 		PreparedStatement ps;
 		try {
-			ps = connection.prepareStatement("DROP TABLE persons");
-			ps.executeUpdate();
 			System.out.println("Dropped table persons");
 			ps = connection.prepareStatement("DROP TABLE prefs");
 			ps.executeUpdate();
