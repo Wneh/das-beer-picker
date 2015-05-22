@@ -48,15 +48,15 @@ public class CustomerGroup {
             }
         }
         private double getAvgAttributeValue(int i){
-            if(maxValues.length-1 > i) return maxValues[i];
+            if(avgValues.length > i) return avgValues[i];
             return 0;
         }
         private double getMaxAttributeValue(int i){
-            if(maxValues.length - 1 > i) return maxValues[i];
+            if(maxValues.length > i) return maxValues[i];
             return 0;
         }
         private double getMinAttributeValue(int i){
-            if(minValues.length - 1 > i) return minValues[i];
+            if(minValues.length > i) return minValues[i];
             return 0;
         }
     }

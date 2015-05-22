@@ -27,7 +27,6 @@ public class Main {
 		Connection connection = new utils.DatabaseConnection().getConnection();
 
 		Scanner input = new Scanner(System.in);
-		ArrayList<Person> persons;
 		ArrayList<Prefs> prefs;
 		int i = 0;
 		printMenu();
@@ -35,18 +34,7 @@ public class Main {
 			switch (input.nextInt()){
 				case MENU_EXIT: return;
 				case MENU_RUN:
-					System.out.println("Running... ");
-					persons = loadPersons(connection);
-					prefs = loadPrefs(connection);
-					ArrayList<Person> toppersons = new PreferencePersonSelection().selectPersonsByPreference(persons,prefs,3);
-					ArrayList<Person> cands = new CentroidCandidateFinder().findCentroidCandidates(toppersons,10);
-					ArrayList<Person> res = new DiversePersonSelection().selectMostDiversePersons(cands, 5);
-					System.out.println("Writing results... ");
-					printToPlot(persons,"persons.dat");
-					printToPlot(toppersons,"toppersons.dat");
-					printToPlot(cands,"cands.dat");
-					printToPlot(res, "res.dat");
-					System.out.println("Done!");
+					System.out.println("Obsolete! go home");
 					break;
 				case MENU_RESET_DATABASE:
 					dropTables(connection);
@@ -59,8 +47,7 @@ public class Main {
 					ArrayList<Customer> customers = loadCustomers(connection);
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
 					System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
-					System.out.println(marketAnalyzer.getTopKProducts(1));
-					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.getTopKProducts(1).get(0),10));
+					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
 					break;
 				default:return;
 			}
@@ -109,7 +96,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Product p = new Product(rs.getInt("beer_id"),rs.getString("name"), new ArrayList<Double>(Arrays.asList(rs.getDouble("beska"),rs.getDouble("fyllighet"),rs.getDouble("sotma"),rs.getDouble("price"))));
+				Product p = new Product(rs.getInt("beer_id"),rs.getString("name"), new ArrayList<Double>(Arrays.asList(rs.getDouble("beska"),rs.getDouble("fyllighet"),rs.getDouble("sotma"))));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -137,34 +124,16 @@ public class Main {
 		}
 
 		for(Prefs p : result){
-			customers.add(new Customer(p.toArrayList(),p.id,p.id+""));
+			ArrayList<Double> preference = new ArrayList<Double>();
+			preference.add(p.pref1);
+			preference.add(p.pref2);
+			preference.add(p.pref3);
+			customers.add(new Customer(preference,p.id,p.id+""));
 		}
 		return customers;
 	}
 	
-	/**
-	 * Loads all people from the the database and return it in a
-	 * arraylist of Person objects
-	 * 
-	 * @param connection
-	 * @return
-	 */
-	public ArrayList<Person> loadPersons(Connection connection){
-		ArrayList<Person> result = new ArrayList<Person>();
-		String getStatement = "SELECT * FROM persons;";
-		
-		try {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(getStatement);
-			while(rs.next()){
-				Person p = new Person(rs.getInt("persons_id"),rs.getInt("age"),rs.getInt("length"),rs.getInt("weight"));
-				result.add(p);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}	
-		return result;
-	}
+
 	
 	/**
 	 * Get this party started
@@ -174,18 +143,7 @@ public class Main {
 		new Main();
 	}
 
-	private void printToPlot(ArrayList<Person> persons, String file){
-		try {
-			PrintWriter writer = new PrintWriter(file,"UTF-8");
-			for(Person p: persons)writer.write(p.toPlotString()+"\n");
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 
-	}
 
 	public void dropTables(Connection connection){
 		PreparedStatement ps;
