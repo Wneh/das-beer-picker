@@ -34,7 +34,6 @@ public class MarketAnalyzer {
                     p2 = j;
                 }
                 distances[i][j] = tmpDist;
-
             }
         }
         // add products with greatest distance
@@ -65,6 +64,74 @@ public class MarketAnalyzer {
 
     public ArrayList<Product> getKMostDiverseProducts(int k) {
         return getKMostDiverseProducts(productGroup.products,k);
+    }
+
+    public ArrayList<Customer> getKMostDiverseCustomers(ArrayList<Customer> customers,int k){
+        if(k > customers.size()) return null;
+        ArrayList<Customer> result = new ArrayList<Customer>();
+        // calc distance between all products
+        int p1 = 0, p2 = 0;
+        double [][] distances = new double[customers.size()][customers.size()];
+        for (int i = 0; i < customers.size(); i++) {
+            double maxDist = Double.MAX_VALUE;
+            for (int j = i + 1; j < customers.size(); j++){
+                double tmpDist = new CosineSimilarity().cosineSimilarity(customers.get(i).toArray(), customers.get(j).toArray());
+                if (tmpDist < maxDist) {
+                    maxDist = tmpDist;
+                    p1 = i;
+                    p2 = j;
+                }
+                distances[i][j] = tmpDist;
+            }
+        }
+        // add products with greatest distance
+        result.add(customers.get(p1));
+        result.add(customers.get(p2));
+        HashSet<Integer> taken = new HashSet<Integer>();
+        taken.add(p1);taken.add(p2);
+        while (result.size() < k) {
+            double min = Double.MAX_VALUE;
+            int cand = -1;
+            for (int i = 0; i < customers.size(); i++) {
+                if (!taken.contains(i)) {
+                    double sum = 0;
+                    for (int j : taken) {
+                        sum += distances[i][j];
+                    }
+                    if (sum < min) {
+                        min = sum;
+                        cand = i;
+                    }
+                }
+            }
+            taken.add(cand);
+            result.add(customers.get(cand));
+        }
+        return result;
+
+    }
+
+    public Product getTopProduct(Customer customer){
+        ArrayList<Customer> customers = new ArrayList<Customer>();
+        customers.add(customer);
+       return getTopKProducts(productGroup.products,customers,1).get(0);
+    }
+
+    public Product topP(Customer c){
+        double min = Double.MAX_VALUE;
+        Product top = new Product();
+        for(Product p: productGroup.products){
+            double sum = 0;
+            ArrayList<Double> weights = getWeightedAttributesList(p);
+            for (int i = 0; i < p.attributes.size(); i++) {
+                sum += Math.abs(weights.get(i) - c.preferences.get(i));
+            }
+            if(sum < min){
+                min = sum;
+                top = p;
+            }
+        }
+        return top;
     }
 
     public ArrayList<Product> getTopKProducts(ArrayList<Product> products,ArrayList<Customer> customers, int k){
@@ -124,11 +191,27 @@ public class MarketAnalyzer {
 
     private double[] getWeightedAttributes(Product product){
         double [] weights = new double[product.attributes.size()];
-        for (int i = 0; i < weights.length; i++) {
-            double distanceFromAvg = Math.abs(productGroup.getAvgAttributeValue(i) - product.attributes.get(i));
-            weights[i] = 10 * (distanceFromAvg/productGroup.getMaxAttributeValue(i));
+        ArrayList<Double> doubles = new ArrayList<Double>();
+        double sum = 0;
+        for (int i = 0; i < product.attributes.size(); i++) {
+            sum += product.attributes.get(i);
+        }
+        for (int i = 0; i < product.attributes.size(); i++) {
+            weights[i] = (product.attributes.get(i)/sum);
         }
         return weights;
+    }
+
+    private ArrayList<Double> getWeightedAttributesList(Product product){
+        ArrayList<Double> doubles = new ArrayList<Double>();
+        double sum = 0;
+        for (int i = 0; i < product.attributes.size(); i++) {
+            sum += product.attributes.get(i);
+        }
+        for (int i = 0; i < product.attributes.size(); i++) {
+            doubles.add(product.attributes.get(i)/sum);
+        }
+        return doubles;
     }
 
     public ArrayList<Product> getTopKProducts(int k) {

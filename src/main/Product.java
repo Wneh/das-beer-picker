@@ -23,6 +23,14 @@ public class Product {
         }
         return arr;
     }
+    public Product(){
+        this.id = -1;
+        this.name = "";
+        ArrayList<Double> doubles = new ArrayList<Double>();
+        doubles.add(0.0);
+        doubles.add(0.0);
+        doubles.add(0.0);
+    }
 
     @Override
     public String toString() {
