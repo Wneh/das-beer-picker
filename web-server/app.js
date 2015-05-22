@@ -1,13 +1,22 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var indexRoute = require('./routes/index');
+var voteRoute = require('./routes/vote');
 
 
 app.engine('jade', require('jade').__express);
 app.set('view engine','jade');
 app.set('views', __dirname + '/views');
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
+
 app.get('/', indexRoute.getIndex);
+
+app.post('/vote', voteRoute.vote);
 
 app.get('/beer', indexRoute.listBeer);
 
