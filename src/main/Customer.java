@@ -16,6 +16,12 @@ public class Customer {
         this.name = name;
     }
 
+    public Customer(){
+        this.id = -1;
+        this.name = "name";
+        this.preferences = new ArrayList<Double>();
+    }
+
     public double[] toArray(){
         double[] arr = new double[preferences.size()];
         for (int i = 0; i < arr.length; i++) {

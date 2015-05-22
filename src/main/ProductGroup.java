@@ -44,8 +44,11 @@ public class ProductGroup {
                         double attr = p.attributes.get(i);
                         if(maxValues[i] < p.attributes.get(i))maxValues[i] = attr;
                         else if(minValues[i] > attr)minValues[i] = attr;
-                        avgValues[i] += attr/nrOfProductAttributes;
+                        avgValues[i] += attr;
                     }
+                }
+                for (int i = 0; i < avgValues.length; i++) {
+                    avgValues[i] = avgValues[i]/products.size();
                 }
             }
         }

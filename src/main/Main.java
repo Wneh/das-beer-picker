@@ -16,6 +16,8 @@ public class Main {
 	private final int MENU_RESET_DATABASE = 2;
 	private final int MENU_CREATE_RANDOM_DATABASE = 3;
 	private final int MENU_RUN_NEW = 4;
+	private final int GET_VOTES = 5;
+	private int RESULT_ID = 1;
 
 
 
@@ -28,6 +30,7 @@ public class Main {
 
 		Scanner input = new Scanner(System.in);
 		ArrayList<Prefs> prefs;
+		ArrayList<VotingFactory> votes;
 		int i = 0;
 		printMenu();
 		while (true){
@@ -46,14 +49,59 @@ public class Main {
 					ArrayList<Product> products = loadProducts(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
-					System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
-					System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
+					printToFile("prods.dat",products);
+					ArrayList<Product> top =marketAnalyzer.getTopKProducts(5);
+					printToFile("top.dat",top);
+					ArrayList<Product> div =marketAnalyzer.getKMostDiverseProducts(marketAnalyzer.getTopKProducts(5), 3);
+					printToFile("div.dat",div);
+					createResultTable(connection);
+
+					insertResult(connection, products, "all");
+					insertResult(connection,top,"top");
+					insertResult(connection,div,"div");
+
+					break;
+				case GET_VOTES:
+					loadVotes(connection);
 					break;
 				default:return;
 			}
 			printMenu();
 		}
 	}
+	private void createResultTable(Connection connection){
+		System.out.println("HEJ");
+		PreparedStatement ps;
+		try {
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS results(id SERIAL NOT NULL PRIMARY KEY, x DOUBLE PRECISION , y DOUBLE PRECISION, z DOUBLE PRECISION, type VARCHAR(40))");
+			ps.executeUpdate();
+			ps.close();
+			System.out.println("Created results table");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void insertResult(Connection connection,ArrayList<Product> products,String name) {
+		String insertString = "INSERT INTO results VALUES(?,?,?,?,?)";
+		PreparedStatement insertPrefs = null;
+		try {
+			insertPrefs = connection.prepareStatement(insertString);
+			for(Product p : products){
+				insertPrefs.setInt(1,RESULT_ID);
+				insertPrefs.setDouble(2,p.attributes.get(0));
+				insertPrefs.setDouble(3,p.attributes.get(1));
+				insertPrefs.setDouble(4,p.attributes.get(2));
+				insertPrefs.setString(5, name);
+				insertPrefs.executeUpdate();
+				RESULT_ID++;
+			}
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+
+	}
+
 	private void printMenu(){
 		System.out.println();
 		System.out.println("Menu:");
@@ -61,9 +109,49 @@ public class Main {
 		System.out.println("2: Reset Database");
 		System.out.println("3: Create Random Database");
 		System.out.println("4: Run new");
+		System.out.println("5: Read votes");
 		System.out.println("0: Exit");
 	}
-	
+
+	/**
+	 * Loads all preferences from the database and return it in
+	 * an arraylist
+	 *
+	 * @param connection
+	 * @return
+	 */
+	public void loadVotes(Connection connection){
+		ArrayList<VotingFactory> result = new ArrayList<VotingFactory>();
+		String getStatement = "select beska, sotma, fyllighet from votes, beer where beer.beer_id = votes.beer_id";
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(getStatement);
+			while(rs.next()){
+				VotingFactory vote = new VotingFactory(rs.getDouble("beska"),rs.getDouble("sotma"),rs.getDouble("fyllighet"));
+				result.add(vote);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		String insertStatement = "INSERT INTO prefs(prefs_id,pref1, pref2, pref3) VALUES(DEFAULT,?,?,?)";
+		PreparedStatement prepared = null;
+
+		try {
+			prepared = connection.prepareStatement(insertStatement);
+			for (VotingFactory votingFactory : result) {
+				prepared.setDouble(1, votingFactory.beska);
+				prepared.setDouble(2, votingFactory.sotma);
+				prepared.setDouble(3, votingFactory.fyllighet);
+				prepared.executeUpdate();
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Loads all preferences from the database and return it in
 	 * an arraylist
@@ -79,7 +167,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -116,7 +204,7 @@ public class Main {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"),rs.getDouble("pref4"));
+				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
 				result.add(p);
 			}
 		} catch (SQLException e) {
@@ -143,7 +231,17 @@ public class Main {
 		new Main();
 	}
 
-
+	public void printToFile(String file, ArrayList<Product> products){
+			try {
+				PrintWriter writer = new PrintWriter(file,"UTF-8");
+				for(Product p: products)writer.write(p.printForGNUPlot()+"\n");
+				writer.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+	}
 
 	public void dropTables(Connection connection){
 		PreparedStatement ps;
@@ -159,6 +257,10 @@ public class Main {
 			ps = connection.prepareStatement("DROP TABLE votes");
 			ps.executeUpdate();
 			System.out.println("Dropped table votes");
+
+			ps = connection.prepareStatement("DROP TABLE results");
+			ps.executeUpdate();
+			System.out.println("Dropped table results");
 			
 			ps.close();
 		} catch (SQLException e) {
