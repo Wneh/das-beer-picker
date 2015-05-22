@@ -1,7 +1,10 @@
 var beerModel = require('./../models/beer');
 
 exports.getIndex = function(req,res){
-	res.render('index',{});
+	beerModel.getAllBeer(function (err, result){
+		console.log(result);
+		res.render('index',{beers:result});
+	});
 };
 
 exports.listBeer = function(req,res){
