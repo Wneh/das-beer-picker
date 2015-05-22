@@ -48,15 +48,11 @@ public class Main {
 					ArrayList<Product> products = loadProducts(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
-					System.out.println(products);
-					for(Customer c : customers){
-						System.out.println(c);
-						System.out.println(marketAnalyzer.topP(c));
-						System.out.println("=================================");
-					}
-
-					//System.out.println(marketAnalyzer.getKMostDiverseProducts(3));
-					//System.out.println(marketAnalyzer.getTopKCustomerCentroidCandidates(marketAnalyzer.productGroup.products.get(1),5));
+					printToFile("prods.dat",products);
+					ArrayList<Product> top =marketAnalyzer.getTopKProducts(5);
+					printToFile("top.dat",top);
+					ArrayList<Product> div =marketAnalyzer.getKMostDiverseProducts(marketAnalyzer.getTopKProducts(5), 3);
+					printToFile("div.dat",div);
 					break;
 				case GET_VOTES:
 					loadVotes(connection);
@@ -195,7 +191,17 @@ public class Main {
 		new Main();
 	}
 
-
+	public void printToFile(String file, ArrayList<Product> products){
+			try {
+				PrintWriter writer = new PrintWriter(file,"UTF-8");
+				for(Product p: products)writer.write(p.printForGNUPlot()+"\n");
+				writer.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+	}
 
 	public void dropTables(Connection connection){
 		PreparedStatement ps;

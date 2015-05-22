@@ -40,16 +40,20 @@ public class CustomerGroup {
                 for (Customer c : customers) {
                     for (int i = 0; i < c.preferences.size(); i++) {
                         double attr = c.preferences.get(i);
-                        if(maxValues[i] < c.preferences.get(i))maxValues[i] = attr;
+                        if(maxValues[i] < c.preferences.get(i)){
+                            maxValues[i] = attr;
+                        }
                         else if(minValues[i] > attr)minValues[i] = attr;
-                        avgValues[i] += attr/nrOfCustomerPreferences;
+                        avgValues[i] += attr;
                     }
+                }
+                for (int i = 0; i < avgValues.length; i++) {
+                    avgValues[i] = avgValues[i]/customers.size();
                 }
             }
         }
         private double getAvgAttributeValue(int i){
-            if(avgValues.length > i) return avgValues[i];
-            return 0;
+            return avgValues[i];
         }
         private double getMaxAttributeValue(int i){
             if(maxValues.length > i) return maxValues[i];
