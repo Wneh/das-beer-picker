@@ -190,13 +190,18 @@ public class Main {
 	public void dropTables(Connection connection){
 		PreparedStatement ps;
 		try {
-			System.out.println("Dropped table persons");
 			ps = connection.prepareStatement("DROP TABLE prefs");
 			ps.executeUpdate();
 			System.out.println("Dropped table prefs");
+			
 			ps = connection.prepareStatement("DROP TABLE beer");
 			ps.executeUpdate();
 			System.out.println("Dropped table beer");
+			
+			ps = connection.prepareStatement("DROP TABLE votes");
+			ps.executeUpdate();
+			System.out.println("Dropped table votes");
+			
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
