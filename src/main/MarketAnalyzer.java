@@ -23,9 +23,9 @@ public class MarketAnalyzer {
         ArrayList<Product> result = new ArrayList<Product>();
         // calc distance between all products
         int p1 = 0, p2 = 0;
+        double maxDist = Double.MAX_VALUE;
         double [][] distances = new double[products.size()][products.size()];
         for (int i = 0; i < products.size(); i++) {
-            double maxDist = Double.MAX_VALUE;
             for (int j = i + 1; j < products.size(); j++){
                 double tmpDist = new CosineSimilarity().cosineSimilarity(products.get(i).toArray(), products.get(j).toArray());
                 if (tmpDist < maxDist) {
@@ -69,7 +69,7 @@ public class MarketAnalyzer {
     public ArrayList<Customer> getKMostDiverseCustomers(ArrayList<Customer> customers,int k){
         if(k > customers.size()) return null;
         ArrayList<Customer> result = new ArrayList<Customer>();
-        // calc distance between all products
+        // calc distance between all customers
         int p1 = 0, p2 = 0;
         double [][] distances = new double[customers.size()][customers.size()];
         for (int i = 0; i < customers.size(); i++) {
@@ -111,20 +111,13 @@ public class MarketAnalyzer {
 
     }
 
-    public Product getTopProduct(Customer customer){
-        ArrayList<Customer> customers = new ArrayList<Customer>();
-        customers.add(customer);
-       return getTopKProducts(productGroup.products,customers,1).get(0);
-    }
-
-    public Product topP(Customer c){
+    public Product topProduct(Customer c){
         double min = Double.MAX_VALUE;
         Product top = new Product();
         for(Product p: productGroup.products){
             double sum = 0;
-            ArrayList<Double> weights = getWeightedAttributesList(p);
             for (int i = 0; i < p.attributes.size(); i++) {
-                sum += Math.abs(weights.get(i) - c.preferences.get(i));
+                sum += Math.abs(p.weightedAttributes.get(i) - c.preferences.get(i));
             }
             if(sum < min){
                 min = sum;
@@ -136,28 +129,26 @@ public class MarketAnalyzer {
 
     public ArrayList<Product> getTopKProducts(ArrayList<Product> products,ArrayList<Customer> customers, int k){
         HashSet<Product> result = new HashSet<Product>();
-        for (int i = 0; i < customers.size(); i++) {
-            ArrayList<ProductWrapper> sums = new ArrayList<ProductWrapper>();
-            for (int j = 0; j < products.size(); j++) {
-                double [] weights = getWeightedAttributes(products.get(j));
-                double sumWeights = 0;
-                for (int r = 0; r < products.get(j).attributes.size(); r++) {
-                    sumWeights += weights[r]*customers.get(i).preferences.get(r);
-                }
-                sums.add(new ProductWrapper(products.get(j), sumWeights));
+        double min = Double.MAX_VALUE;
+        Product top = new Product();
+        ArrayList<ProductWrapper> sums = new ArrayList<ProductWrapper>();
+        for (Product p : productGroup.products) {
+            double sum = 0;
+            for (int i = 0; i < p.attributes.size(); i++) {
+                sum += Math.abs(p.weightedAttributes.get(i) - customerGroup.getAvgAttributeValue(i));
             }
-            Collections.sort(sums);
-            Collections.reverse(sums);
-            for (int j = 0; j < k; j++) {
-                result.add(sums.get(j).product);
-            }
+            sums.add(new ProductWrapper(p, sum));
+        }
+
+        Collections.sort(sums);
+        for (int j = 0; j < k; j++) {
+            result.add(sums.get(j).product);
         }
         return new ArrayList<Product>(result);
     }
 
     public ArrayList<Customer> getTopKCustomerCentroidCandidates(Product product, int k){
         Customer idealCustomer = generateIdealCustomer(product);
-        System.out.println("IDEAL CUSTOEMR: "+idealCustomer);
         HashMap<Double,Customer> customerMap = new HashMap<Double, Customer>();
         ArrayList<Double> cosines = new ArrayList<Double>();
         for (Customer c: customerGroup.customers){
@@ -181,25 +172,19 @@ public class MarketAnalyzer {
      * @return
      */
     private Customer generateIdealCustomer(Product product) {
-        double[] weDoubles = getWeightedAttributes(product);
-        double sum = 0;
-        for (double d: weDoubles)sum += d;
-        ArrayList<Double> preferences = new ArrayList<Double>();
-        for (double d: weDoubles)preferences.add(d/sum);
-        return new Customer(preferences,9876, "ideal");
-    }
-
-    private double[] getWeightedAttributes(Product product){
-        double [] weights = new double[product.attributes.size()];
-        ArrayList<Double> doubles = new ArrayList<Double>();
-        double sum = 0;
-        for (int i = 0; i < product.attributes.size(); i++) {
-            sum += product.attributes.get(i);
+        Customer top = new Customer();
+        double min = 0;
+        for (Customer c : customerGroup.customers){
+            double sum = 0;
+            for (int i = 0; i < c.preferences.size(); i++) {
+                sum += Math.abs(c.preferences.get(i) - product.weightedAttributes.get(i));
+            }
+            if(sum < min){
+                min = sum;
+                top = c;
+            }
         }
-        for (int i = 0; i < product.attributes.size(); i++) {
-            weights[i] = (product.attributes.get(i)/sum);
-        }
-        return weights;
+        return top;
     }
 
     private ArrayList<Double> getWeightedAttributesList(Product product){
