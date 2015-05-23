@@ -43,9 +43,9 @@ exports.haveData = function(callback){
 			if(err){
 				console.log("Error while running select query");
 				console.log(err);
-				return callback(err, null);
+				return callback(null, false);
 			}
-			if(result.rows > 0){
+			if(result.rows && result.rows > 0){
 				callback(null, true);
 			} else {
 				callback(null,false);
