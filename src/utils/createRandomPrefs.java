@@ -34,10 +34,6 @@ public class createRandomPrefs {
 		ArrayList<ArrayList<Double>> data = createPrefs(COUNTER,3);
 
 		createTable(connection);
-
-		//insertPrefs(connection,data);
-
-		//createPersons(connection);
 		
 		createTableBeer(connection);
 		

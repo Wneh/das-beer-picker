@@ -1,5 +1,7 @@
 package main;
 
+import utils.createRandomPrefs;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -10,11 +12,8 @@ import java.util.concurrent.SynchronousQueue;
 public class Main {
 
 	private final int MENU_EXIT = 0;
-	private final int MENU_RUN = 1;
-	private final int MENU_RESET_DATABASE = 2;
-	private final int MENU_CREATE_RANDOM_DATABASE = 3;
-	private final int MENU_RUN_NEW = 4;
-	private final int GET_VOTES = 5;
+	private final int MENU_INITIALIZE = 1;
+	private final int MENU_RUN = 2;
 	private int RESULT_ID = 1;
 
 
@@ -27,27 +26,19 @@ public class Main {
 		Connection connection = new utils.DatabaseConnection().getConnection();
 
 		Scanner input = new Scanner(System.in);
-		ArrayList<Prefs> prefs;
-		ArrayList<VotingFactory> votes;
 		int i = 0;
 		printMenu();
 		while (true){
 			switch (input.nextInt()){
 				case MENU_EXIT: return;
 				case MENU_RUN:
-					System.out.println("Obsolete! go home");
-					break;
-				case MENU_RESET_DATABASE:
-					dropTables(connection);
-					break;
-				case MENU_CREATE_RANDOM_DATABASE:
-					new utils.createRandomPrefs();
-					break;
-				case MENU_RUN_NEW:
-
 					//==LOAD DATA
 					ArrayList<Product> products = loadProducts(connection);
-					loadVotes(connection);
+					int s = loadVotes(connection);
+					if(s < 1){
+						System.out.println("No votes found, exiting");
+						return;
+					}
 					ArrayList<Customer> customers = loadCustomers(connection);
 
 					//==CREATE MARKET FROM DATA
@@ -60,40 +51,9 @@ public class Main {
 					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
 					System.out.println("Top K Products: \n" + topKProducts);
 
-					//Reverse Top k Customers for each product
-					HashMap<Product,ArrayList<Customer>> reverseTopKProductMap = new HashMap<Product, ArrayList<Customer>>();
-					HashMap<Customer,ArrayList<Product>> reverseTopKCustomerMap = new HashMap<Customer, ArrayList<Product>>();
-					for (Product p : topKProducts){
-						ArrayList<Customer> reverseTopKCustomers = marketAnalyzer.getTopKCustomerCentroidCandidates(p,2);
-						reverseTopKProductMap.put(p,reverseTopKCustomers);
-						for (Customer c: reverseTopKCustomers){	//create a hashmap that connects customers to products
-							if(!reverseTopKCustomerMap.containsKey(c))reverseTopKCustomerMap.put(c,new ArrayList<Product>());
-							reverseTopKCustomerMap.get(c).add(p);
-						}
-					}
-					//Top r diverse products by customer
+
+					//Get r most diverse products
 					int r = 2;
-					/*
-					ArrayList<Customer> reverseCustomers = new ArrayList<Customer>();
-					for (Product p : topKProducts){ //get customers for all top k products
-						for (Customer c : reverseTopKProductMap.get(p)){
-							if(!reverseCustomers.contains(c)){
-								reverseCustomers.add(c);
-							}
-						}
-					}
-					//get the most diverse customers by their preferences
-					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomer,r);
-
-					//add products from the most diverse customers
-					ArrayList<Product> mostDiverseProducts = new ArrayList<Product>();
-					for(Customer c : mostDiverseCustomers){
-						for (Product p : reverseTopKCustomerMap.get(c))mostDiverseProducts.add(p);
-					}
-
-					*/
-					
-					//Get most diverse products
 					ArrayList<Product> mostDiverseProducts = marketAnalyzer.getKMostDiverseProducts(topKProducts,r);
 					System.out.println("Most diverse products: "+mostDiverseProducts);
 
@@ -110,8 +70,17 @@ public class Main {
 					insertResult(connection, mostDiverseProducts,"div");
 
 					break;
-				case GET_VOTES:
-					loadVotes(connection);
+				case MENU_INITIALIZE:
+					dropTables(connection);
+					new createRandomPrefs();
+					System.out.println();
+					System.out.println("WARNING! Wait for votes");
+					System.out.println("Press 1 when ready and then run");
+					switch (input.nextInt()){
+						case 1:
+							break;
+						default:break;
+					}
 					break;
 				default:return;
 			}
@@ -168,11 +137,8 @@ public class Main {
 	private void printMenu(){
 		System.out.println();
 		System.out.println("Menu:");
-		System.out.println("1: Run");
-		System.out.println("2: Reset Database");
-		System.out.println("3: Create Random Database");
-		System.out.println("4: Run new");
-		System.out.println("5: Read votes");
+		System.out.println("1: Initialize");
+		System.out.println("2: Run");
 		System.out.println("0: Exit");
 	}
 
@@ -183,7 +149,7 @@ public class Main {
 	 * @param connection
 	 * @return
 	 */
-	public void loadVotes(Connection connection){
+	public int loadVotes(Connection connection){
 		ArrayList<VotingFactory> result = new ArrayList<VotingFactory>();
 		String getStatement = "select votes.name, avg(beska) as beska, avg(sotma) as sotma, avg(fyllighet) as fyllighet from votes, beer where beer.beer_id = votes.beer_id GROUP by votes.name";
 		try {
@@ -213,30 +179,7 @@ public class Main {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Loads all preferences from the database and return it in
-	 * an arraylist
-	 * 
-	 * @param connection
-	 * @return
-	 */
-	public ArrayList<Prefs> loadPrefs(Connection connection){
-		ArrayList<Prefs> result = new ArrayList<Prefs>();
-		String getStatement = "SELECT * FROM prefs;";
-		
-		try {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(getStatement);
-			while(rs.next()){
-				Prefs p = new Prefs(rs.getInt("prefs_id"),rs.getDouble("pref1"),rs.getDouble("pref2"),rs.getDouble("pref3"));
-				result.add(p);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}	
-		return result;
+		return result.size();
 	}
 
 	public ArrayList<Product> loadProducts(Connection connection){
@@ -320,16 +263,48 @@ public class Main {
 			ps = connection.prepareStatement("DROP TABLE votes");
 			ps.executeUpdate();
 			System.out.println("Dropped table votes");
-
-			ps = connection.prepareStatement("DROP TABLE results");
-			ps.executeUpdate();
-			System.out.println("Dropped table results");
 			
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void oldStuff(){
+		/*
+		//Reverse Top k Customers for each product
+		HashMap<Product,ArrayList<Customer>> reverseTopKProductMap = new HashMap<Product, ArrayList<Customer>>();
+		HashMap<Customer,ArrayList<Product>> reverseTopKCustomerMap = new HashMap<Customer, ArrayList<Product>>();
+		for (Product p : topKProducts){
+			ArrayList<Customer> reverseTopKCustomers = marketAnalyzer.getTopKCustomerCentroidCandidates(p,2);
+			reverseTopKProductMap.put(p,reverseTopKCustomers);
+			for (Customer c: reverseTopKCustomers){	//create a hashmap that connects customers to products
+				if(!reverseTopKCustomerMap.containsKey(c))reverseTopKCustomerMap.put(c,new ArrayList<Product>());
+				reverseTopKCustomerMap.get(c).add(p);
+			}
+		}
+		//Top r diverse products by customer
+
+
+					ArrayList<Customer> reverseCustomers = new ArrayList<Customer>();
+					for (Product p : topKProducts){ //get customers for all top k products
+						for (Customer c : reverseTopKProductMap.get(p)){
+							if(!reverseCustomers.contains(c)){
+								reverseCustomers.add(c);
+							}
+						}
+					}
+					//get the most diverse customers by their preferences
+					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomer,r);
+
+					//add products from the most diverse customers
+					ArrayList<Product> mostDiverseProducts = new ArrayList<Product>();
+					for(Customer c : mostDiverseCustomers){
+						for (Product p : reverseTopKCustomerMap.get(c))mostDiverseProducts.add(p);
+					}
+
+					*/
 	}
 
 
