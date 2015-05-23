@@ -47,13 +47,13 @@ public class Main {
 					//==RUN MAIN ALGORITHM
 
 					//Top k products by Customer preferences
-					int k = 6;
+					int k = 8;
 					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
 					System.out.println("Top K Products: \n" + topKProducts);
 
 
 					//Get r most diverse products
-					int r = 2;
+					int r = 3;
 					ArrayList<Product> mostDiverseProducts = marketAnalyzer.getKMostDiverseProducts(topKProducts,r);
 					System.out.println("Most diverse products: "+mostDiverseProducts);
 

@@ -208,12 +208,6 @@ public class createRandomPrefs {
 		toInsert.add(new Product(16, "Erdinger", new ArrayList<Double>(Arrays.asList(0.2, 0.6, 0.1, 77.2))));
 
 
-
-
-
-
-
-
 		String insertString = "INSERT INTO beer VALUES(?,?,?,?,?,?)";
 
 		PreparedStatement insertPrefs = null;

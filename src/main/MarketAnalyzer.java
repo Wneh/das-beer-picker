@@ -15,7 +15,6 @@ public class MarketAnalyzer {
     }
 
     public ArrayList<Product> getKMostDiverseProducts(ArrayList<Product> products,int k){
-
         if(k > products.size()) return null;
         ArrayList<Product> result = new ArrayList<Product>();
         // calc distance between all products
@@ -23,7 +22,8 @@ public class MarketAnalyzer {
         double maxDist = Double.MAX_VALUE;
         double [][] distances = new double[products.size()][products.size()];
         for (int i = 0; i < products.size(); i++) {
-            for (int j = i + 1; j < products.size(); j++){
+            for (int j = 0; j < products.size(); j++){
+                if(i == j)continue;
                 double tmpDist = new CosineSimilarity().cosineSimilarity(products.get(i).toArray(), products.get(j).toArray());
                 if (tmpDist < maxDist) {
                     maxDist = tmpDist;
@@ -33,14 +33,15 @@ public class MarketAnalyzer {
                 distances[i][j] = tmpDist;
             }
         }
+
         // add products with greatest distance
         result.add(products.get(p1));
         result.add(products.get(p2));
         HashSet<Integer> taken = new HashSet<Integer>();
         taken.add(p1);taken.add(p2);
         while (result.size() < k) {
-            double min = Double.MAX_VALUE;
             int cand = -1;
+            double min = Double.MAX_VALUE;
             for (int i = 0; i < products.size(); i++) {
                 if (!taken.contains(i)) {
                     double sum = 0;
@@ -156,7 +157,7 @@ public class MarketAnalyzer {
         }
         Collections.sort(cosines);
         Collections.reverse(cosines);
-        System.out.println("Cosines: \n"+cosines);
+        System.out.println("Cosines: \n" + cosines);
         ArrayList<Customer> candidates = new ArrayList<Customer>();
         for (int i = 0; i < k; i++) {
             candidates.add(customerMap.get(cosines.get(i)));
