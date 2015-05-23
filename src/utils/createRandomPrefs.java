@@ -3,10 +3,7 @@ package utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 import main.Product;
 
@@ -40,10 +37,12 @@ public class createRandomPrefs {
 		//createPersons(connection);
 		
 		createTableBeer(connection);
-		
-		fillBeerTable(connection);
+
+		int beers =  fillBeerTable(connection);
 		
 		createTableVote(connection);
+
+		createBeerVotess(connection, beers);
 	}
 	
 	/**
@@ -191,7 +190,7 @@ public class createRandomPrefs {
 		}
 	}
 	
-	private static void fillBeerTable(Connection connection){
+	private static int fillBeerTable(Connection connection){
 		ArrayList<Product> toInsert = new ArrayList<Product>();
 		
 		toInsert.add(new Product(1,"Sofiero Original", new ArrayList<Double>(Arrays.asList(0.3, 0.4, 0.1,30.0))));
@@ -212,12 +211,6 @@ public class createRandomPrefs {
 		toInsert.add(new Product(16, "Erdinger", new ArrayList<Double>(Arrays.asList(0.2, 0.6, 0.1, 77.2))));
 
 
-
-
-
-
-
-
 		String insertString = "INSERT INTO beer VALUES(?,?,?,?,?,?)";
 
 		PreparedStatement insertPrefs = null;
@@ -236,8 +229,38 @@ public class createRandomPrefs {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return toInsert.size();
 	}
-	
+
+	private static void createBeerVotess(Connection connection, int beers) {
+		int votes = beers;
+
+		String insertStatement = "INSERT INTO votes(beer_id, name) VALUES(?,?)";
+
+		PreparedStatement insertPrefs = null;
+		try {
+			insertPrefs = connection.prepareStatement(insertStatement);
+			for(int i = 0; i < 10; i++) {
+				int numberOfVotes = randomNumber(1,5);
+				HashSet<Integer> voted = new HashSet<Integer>();
+				for(int j = 0; j < numberOfVotes; j++) {
+					int beerId = randomNumber(1, beers);
+					if(!voted.contains(beerId)){
+						insertPrefs.setInt(1,beerId);
+						insertPrefs.setString(2, "voter" + i);
+						insertPrefs.executeUpdate();
+						voted.add(beerId);
+					}
+				}
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
 	private static int randomNumber(int min, int max){
 		Random r = new Random();
 		return r.nextInt((max - min) + 1) + min;
