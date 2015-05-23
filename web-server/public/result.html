@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Result page</title>
@@ -11,7 +11,7 @@
 	<script src="http://code.highcharts.com/highcharts-3d.js"></script>
 	<script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-	<div id="container" style="height: 500px"></div>
+	<div id="container" style="height: 700px; width:700px"></div>
 
 	<script>
 		function createChart (inputData) {
@@ -70,11 +70,12 @@
 			        legend: {
 			            enabled: true
 			        },
-			        series: [{
-			            name: 'All',
-			            color: '#FF0000',
+			        series: [
+					{
+			        	name: 'Div',
+			            color: '#00FF00',
 			            colorByPoint: false,
-			            data: inputData.all
+			            data: inputData.div
 			        },
 			        {
 			            name: 'Top',
@@ -83,11 +84,12 @@
 			            data: inputData.top
 			        },
 			        {
-			        	name: 'Div',
-			            color: '#00FF00',
+			            name: 'All',
+			            color: '#FF0000',
 			            colorByPoint: false,
-			            data: inputData.div
-			        }]
+			            data: inputData.all
+			        }
+			        ]
 			    });
 
 			    // Add mouse events for rotation
