@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 
 public class Main {
 
@@ -44,8 +45,9 @@ public class Main {
 					break;
 				case MENU_RUN_NEW:
 
-					//==LOAD DATA INTO MEMORY
+					//==LOAD DATA
 					ArrayList<Product> products = loadProducts(connection);
+					loadVotes(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
 
 					//==CREATE MARKET FROM DATA
@@ -54,7 +56,7 @@ public class Main {
 					//==RUN MAIN ALGORITHM
 
 					//Top k products by Customer preferences
-					int k = 5;
+					int k = 6;
 					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
 					System.out.println("Top K Products: \n" + topKProducts);
 
@@ -63,39 +65,46 @@ public class Main {
 					HashMap<Customer,ArrayList<Product>> reverseTopKCustomerMap = new HashMap<Customer, ArrayList<Product>>();
 					for (Product p : topKProducts){
 						ArrayList<Customer> reverseTopKCustomers = marketAnalyzer.getTopKCustomerCentroidCandidates(p,2);
-						System.out.println("Adding "+p.name+" with Customers: \n "+reverseTopKCustomers);
 						reverseTopKProductMap.put(p,reverseTopKCustomers);
-						for (Customer c: reverseTopKCustomers){
+						for (Customer c: reverseTopKCustomers){	//create a hashmap that connects customers to products
 							if(!reverseTopKCustomerMap.containsKey(c))reverseTopKCustomerMap.put(c,new ArrayList<Product>());
 							reverseTopKCustomerMap.get(c).add(p);
 						}
 					}
-					System.out.println("");
-
 					//Top r diverse products by customer
 					int r = 2;
+					/*
 					ArrayList<Customer> reverseCustomers = new ArrayList<Customer>();
-					for (Product p : topKProducts){
+					for (Product p : topKProducts){ //get customers for all top k products
 						for (Customer c : reverseTopKProductMap.get(p)){
 							if(!reverseCustomers.contains(c)){
 								reverseCustomers.add(c);
 							}
 						}
 					}
+					//get the most diverse customers by their preferences
+					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomer,r);
 
-					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomers,r);
+					//add products from the most diverse customers
 					ArrayList<Product> mostDiverseProducts = new ArrayList<Product>();
 					for(Customer c : mostDiverseCustomers){
 						for (Product p : reverseTopKCustomerMap.get(c))mostDiverseProducts.add(p);
 					}
 
+					*/
+					
+					//Get most diverse products
+					ArrayList<Product> mostDiverseProducts = marketAnalyzer.getKMostDiverseProducts(topKProducts,r);
+					System.out.println("Most diverse products: "+mostDiverseProducts);
 
+					//print results to file
 					printToFile("prods.dat",products);
-
 					printToFile("top.dat",topKProducts);
 					printToFile("div.dat",mostDiverseProducts);
-					createResultTable(connection);
 
+					//send to database
+					dropResultTable(connection);
+					createResultTable(connection);
 					insertResult(connection, products, "all");
 					insertResult(connection, topKProducts,"top");
 					insertResult(connection, mostDiverseProducts,"div");
@@ -109,8 +118,22 @@ public class Main {
 			printMenu();
 		}
 	}
+
+	private void dropResultTable(Connection connection) {
+		PreparedStatement ps;
+		try {
+			ps = connection.prepareStatement("DROP TABLE results");
+			ps.executeUpdate();
+			System.out.println("Dropped table results");
+
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private void createResultTable(Connection connection){
-		System.out.println("HEJ");
 		PreparedStatement ps;
 		try {
 			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS results(id SERIAL NOT NULL PRIMARY KEY, x DOUBLE PRECISION , y DOUBLE PRECISION, z DOUBLE PRECISION, type VARCHAR(40))");
@@ -162,14 +185,14 @@ public class Main {
 	 */
 	public void loadVotes(Connection connection){
 		ArrayList<VotingFactory> result = new ArrayList<VotingFactory>();
-		String getStatement = "select beska, sotma, fyllighet from votes, beer where beer.beer_id = votes.beer_id";
-
+		String getStatement = "select votes.name, avg(beska) as beska, avg(sotma) as sotma, avg(fyllighet) as fyllighet from votes, beer where beer.beer_id = votes.beer_id GROUP by votes.name";
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(getStatement);
 			while(rs.next()){
 				VotingFactory vote = new VotingFactory(rs.getDouble("beska"),rs.getDouble("sotma"),rs.getDouble("fyllighet"));
 				result.add(vote);
+				System.out.println("Vote: "+vote);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
