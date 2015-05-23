@@ -4,10 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -46,19 +43,62 @@ public class Main {
 					new utils.createRandomPrefs();
 					break;
 				case MENU_RUN_NEW:
+
+					//==LOAD DATA INTO MEMORY
 					ArrayList<Product> products = loadProducts(connection);
 					ArrayList<Customer> customers = loadCustomers(connection);
+
+					//==CREATE MARKET FROM DATA
 					MarketAnalyzer marketAnalyzer = new MarketAnalyzer(new ProductGroup(products),new CustomerGroup(customers));
+
+					//==RUN MAIN ALGORITHM
+
+					//Top k products by Customer preferences
+					int k = 5;
+					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
+					System.out.println("Top K Products: \n" + topKProducts);
+
+					//Reverse Top k Customers for each product
+					HashMap<Product,ArrayList<Customer>> reverseTopKProductMap = new HashMap<Product, ArrayList<Customer>>();
+					HashMap<Customer,ArrayList<Product>> reverseTopKCustomerMap = new HashMap<Customer, ArrayList<Product>>();
+					for (Product p : topKProducts){
+						ArrayList<Customer> reverseTopKCustomers = marketAnalyzer.getTopKCustomerCentroidCandidates(p,2);
+						System.out.println("Adding "+p.name+" with Customers: \n "+reverseTopKCustomers);
+						reverseTopKProductMap.put(p,reverseTopKCustomers);
+						for (Customer c: reverseTopKCustomers){
+							if(!reverseTopKCustomerMap.containsKey(c))reverseTopKCustomerMap.put(c,new ArrayList<Product>());
+							reverseTopKCustomerMap.get(c).add(p);
+						}
+					}
+					System.out.println("");
+
+					//Top r diverse products by customer
+					int r = 2;
+					ArrayList<Customer> reverseCustomers = new ArrayList<Customer>();
+					for (Product p : topKProducts){
+						for (Customer c : reverseTopKProductMap.get(p)){
+							if(!reverseCustomers.contains(c)){
+								reverseCustomers.add(c);
+							}
+						}
+					}
+
+					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomers,r);
+					ArrayList<Product> mostDiverseProducts = new ArrayList<Product>();
+					for(Customer c : mostDiverseCustomers){
+						for (Product p : reverseTopKCustomerMap.get(c))mostDiverseProducts.add(p);
+					}
+
+
 					printToFile("prods.dat",products);
-					ArrayList<Product> top =marketAnalyzer.getTopKProducts(5);
-					printToFile("top.dat",top);
-					ArrayList<Product> div =marketAnalyzer.getKMostDiverseProducts(marketAnalyzer.getTopKProducts(5), 3);
-					printToFile("div.dat",div);
+
+					printToFile("top.dat",topKProducts);
+					printToFile("div.dat",mostDiverseProducts);
 					createResultTable(connection);
 
 					insertResult(connection, products, "all");
-					insertResult(connection,top,"top");
-					insertResult(connection,div,"div");
+					insertResult(connection, topKProducts,"top");
+					insertResult(connection, mostDiverseProducts,"div");
 
 					break;
 				case GET_VOTES:

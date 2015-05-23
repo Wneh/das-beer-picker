@@ -1,9 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Created by Erik on 2015-05-21.
@@ -149,6 +146,7 @@ public class MarketAnalyzer {
 
     public ArrayList<Customer> getTopKCustomerCentroidCandidates(Product product, int k){
         Customer idealCustomer = generateIdealCustomer(product);
+        System.out.println("Ideal Customer for "+product.name+": "+idealCustomer);
         HashMap<Double,Customer> customerMap = new HashMap<Double, Customer>();
         ArrayList<Double> cosines = new ArrayList<Double>();
         for (Customer c: customerGroup.customers){
@@ -158,10 +156,16 @@ public class MarketAnalyzer {
         }
         Collections.sort(cosines);
         Collections.reverse(cosines);
+        System.out.println("Cosines: \n"+cosines);
         ArrayList<Customer> candidates = new ArrayList<Customer>();
         for (int i = 0; i < k; i++) {
             candidates.add(customerMap.get(cosines.get(i)));
         }
+        for (Map.Entry<Double, Customer> entry : customerMap.entrySet()) {
+            System.out.println("Cosine: "+entry.getKey()+" Customer: "+entry.getValue());
+
+        }
+
         return candidates;
     }
 
@@ -184,34 +188,12 @@ public class MarketAnalyzer {
     }
 
     private Customer generateIdealCustomer(Product product) {
-        Customer top = new Customer();
-        double min = 0;
-        for (Customer c : customerGroup.customers){
-            double sum = 0;
-            for (int i = 0; i < c.preferences.size(); i++) {
-                sum += Math.abs(c.preferences.get(i) - product.weightedAttributes.get(i));
-            }
-            if(sum < min){
-                min = sum;
-                top = c;
-            }
-        }
+        Customer top = new Customer(product.weightedAttributes, 1337, "Leetman Leetson");
         return top;
     }
 
     private Product generateIdealProduct(Customer customer) {
-        Product top = new Product();
-        double min = 0;
-        for (Product p : productGroup.products){
-            double sum = 0;
-            for (int i = 0; i < customer.preferences.size(); i++) {
-                sum += Math.abs(customer.preferences.get(i) - p.weightedAttributes.get(i));
-            }
-            if(sum < min){
-                min = sum;
-                top = p;
-            }
-        }
+        Product top = new Product(1337, "Leet Beer", customer.preferences);
         return top;
     }
 
