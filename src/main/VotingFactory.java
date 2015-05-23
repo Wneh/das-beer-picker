@@ -30,7 +30,4 @@ public class VotingFactory {
         sotma = sotma/sum;
         fyllighet = fyllighet/sum;
     }
-
-
-
 }

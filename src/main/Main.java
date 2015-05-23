@@ -16,8 +16,6 @@ public class Main {
 	private final int MENU_RUN = 2;
 	private int RESULT_ID = 1;
 
-
-
 	/**
 	 * Main loop is executed from where.
 	 * This is where the user makes all the decisions
