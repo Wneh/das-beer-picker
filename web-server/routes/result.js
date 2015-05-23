@@ -28,19 +28,24 @@ exports.getResult = function(req,res){
 	function (err){
 		if(err){
 			console.log(err);
-			res.status(500).send(err);
+			res.send({'all':[],'top':[],'div':[]});
 		} else {
 			res.send(result);
 		}
 	});
 };
 
+/*
+ * Serve the result.html file if there
+ * is result data in the database, otherwise
+ * send a msg to come back later.
+ */
 exports.resultPage = function(req,res){
 	resultModel.haveData(function (err, data){
 		if(data){
-			res.send("No result yet, check back later");
-		} else {
 			res.sendFile(path.resolve(__dirname +'/../public/result.html'));
+		} else {
+			res.send("No result yet, check back later");
 		}
 	});
 };
