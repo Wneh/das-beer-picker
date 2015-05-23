@@ -42,7 +42,8 @@ exports.getResult = function(req,res){
  */
 exports.resultPage = function(req,res){
 	resultModel.haveData(function (err, data){
-		if(data){
+		console.log(data);
+		if(data === true){
 			res.sendFile(path.resolve(__dirname +'/../public/result.html'));
 		} else {
 			res.send("No result yet, check back later");
