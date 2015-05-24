@@ -27,7 +27,6 @@ exports.getResult = function(req,res){
 	},
 	function (err){
 		if(err){
-			console.log(err);
 			res.send({'all':[],'top':[],'div':[]});
 		} else {
 			res.send(result);
@@ -42,11 +41,10 @@ exports.getResult = function(req,res){
  */
 exports.resultPage = function(req,res){
 	resultModel.haveData(function (err, data){
-		console.log(data);
 		if(data === true){
 			res.sendFile(path.resolve(__dirname +'/../public/result.html'));
 		} else {
-			res.send("No result yet, check back later");
+			res.render("noResult");
 		}
 	});
 };

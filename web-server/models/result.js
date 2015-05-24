@@ -45,7 +45,6 @@ exports.haveData = function(callback){
 				console.log(err);
 				return callback(null, false);
 			}
-			console.log(result);
 			if(result.rows !== undefined && result.rows.length > 0){
 				callback(null, true);
 			} else {
