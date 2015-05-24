@@ -1,0 +1,29 @@
+@import url(http://fonts.googleapis.com/css?family=Lobster);
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+
+h1 {
+    font-family: "Lobster" !important;
+    font-size: 100px !important;
+}
+
+.jumbotron{
+    margin-top: 30px !important;
+    background-image: url("beerbanner.jpg");
+    max-width: 960px !important;
+}
+
+h2 {
+    margin-left: 20px !important;
+}
+
+.col-md-12{
+    margin-left: 20px !important;
+}
+
+.btn{
+    margin-bottom: 50px !important;
+}
+
+#nameInput{
+    width: 16% !important;
+}
