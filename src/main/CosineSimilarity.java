@@ -14,6 +14,7 @@ public class CosineSimilarity {
      * @return 
      */
     public double cosineSimilarity(double[] docVector1, double[] docVector2) {
+        
         double sum = 0;
         for (int i = 0; i < docVector1.length; i++) {
             sum += Math.abs (docVector1[i] - docVector2[i])*Math.abs (docVector1[i] - docVector2[i]);

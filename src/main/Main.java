@@ -16,8 +16,6 @@ public class Main {
 	private final int MENU_RUN = 2;
 	private int RESULT_ID = 1;
 
-
-
 	/**
 	 * Main loop is executed from where.
 	 * This is where the user makes all the decisions
@@ -47,7 +45,7 @@ public class Main {
 					//==RUN MAIN ALGORITHM
 
 					//Top k products by Customer preferences
-					int k = 8;
+					int k = 10;
 					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
 					System.out.println("Top K Products: \n" + topKProducts);
 
@@ -57,6 +55,44 @@ public class Main {
 					ArrayList<Product> mostDiverseProducts = marketAnalyzer.getKMostDiverseProducts(topKProducts,r);
 					System.out.println("Most diverse products: "+mostDiverseProducts);
 
+	/*				int r = 3;
+					//Reverse Top k Customers for each product
+					HashMap<Product,ArrayList<Customer>> reverseTopKProductMap = new HashMap<Product, ArrayList<Customer>>();
+					HashMap<Customer,ArrayList<Product>> reverseTopKCustomerMap = new HashMap<Customer, ArrayList<Product>>();
+					for (Product p : topKProducts){
+						ArrayList<Customer> reverseTopKCustomers = marketAnalyzer.getTopKCustomerCentroidCandidates(p,5);
+						System.out.println("Reverse TOP K customers \n"+reverseTopKCustomers);
+						reverseTopKProductMap.put(p,reverseTopKCustomers);
+						for (Customer c: reverseTopKCustomers){	//create a hashmap that connects customers to products
+							if(!reverseTopKCustomerMap.containsKey(c))reverseTopKCustomerMap.put(c,new ArrayList<Product>());
+							reverseTopKCustomerMap.get(c).add(p);
+						}
+					}
+					//Top r diverse products by customer
+
+					ArrayList<Customer> reverseCustomers = new ArrayList<Customer>();
+					for (Product p : topKProducts){ //get customers for all top k products
+						for (Customer c : reverseTopKProductMap.get(p)){
+							if(!reverseCustomers.contains(c)){
+								reverseCustomers.add(c);
+							}
+						}
+					}
+
+					System.out.println("Reverse customers \n"+reverseCustomers);
+
+					//get the most diverse customers by their preferences
+					ArrayList<Customer> mostDiverseCustomers = marketAnalyzer.getKMostDiverseCustomers(reverseCustomers,r);
+					System.out.println("Most diverse customers \n"+mostDiverseCustomers);
+
+					//add products from the most diverse customers
+					HashSet<Product> divproducts = new HashSet<Product>();
+					for(Customer c : mostDiverseCustomers){
+						for (Product p : reverseTopKCustomerMap.get(c))divproducts.add(p);
+					}
+					ArrayList<Product> mostDiverseProducts = new ArrayList<Product>(divproducts);
+					System.out.println("Most diverse prodcuts \n"+mostDiverseProducts);
+*/
 					//print results to file
 					printToFile("prods.dat",products);
 					printToFile("top.dat",topKProducts);

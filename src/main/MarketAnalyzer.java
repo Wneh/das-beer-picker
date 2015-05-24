@@ -72,7 +72,8 @@ public class MarketAnalyzer {
         double maxDist = Double.MAX_VALUE;
         double [][] distances = new double[customers.size()][customers.size()];
         for (int i = 0; i < customers.size(); i++) {
-            for (int j = i + 1; j < customers.size(); j++){
+            for (int j = 0; j < customers.size(); j++){
+                if(i == j)continue;
                 double tmpDist = new CosineSimilarity().cosineSimilarity(customers.get(i).toArray(), customers.get(j).toArray());
                 if (tmpDist < maxDist) {
                     maxDist = tmpDist;
@@ -87,8 +88,8 @@ public class MarketAnalyzer {
         result.add(customers.get(p2));
         HashSet<Integer> taken = new HashSet<Integer>();
         taken.add(p1);taken.add(p2);
+        double min = Double.MAX_VALUE;
         while (result.size() < k) {
-            double min = Double.MAX_VALUE;
             int cand = -1;
             for (int i = 0; i < customers.size(); i++) {
                 if (!taken.contains(i)) {
@@ -106,7 +107,6 @@ public class MarketAnalyzer {
             result.add(customers.get(cand));
         }
         return result;
-
     }
 
     public Product topProduct(Customer c){
@@ -146,25 +146,22 @@ public class MarketAnalyzer {
     }
 
     public ArrayList<Customer> getTopKCustomerCentroidCandidates(Product product, int k){
+        HashSet<Double> hashcosines = new HashSet<Double>();
         Customer idealCustomer = generateIdealCustomer(product);
-        System.out.println("Ideal Customer for "+product.name+": "+idealCustomer);
         HashMap<Double,Customer> customerMap = new HashMap<Double, Customer>();
-        ArrayList<Double> cosines = new ArrayList<Double>();
         for (Customer c: customerGroup.customers){
             double cosine = cosineSimilarity(idealCustomer, c);
-            cosines.add(cosine);
+            hashcosines.add(cosine);
             customerMap.put(cosine,c);
         }
+        ArrayList<Double> cosines = new ArrayList<Double>(hashcosines);
         Collections.sort(cosines);
-        Collections.reverse(cosines);
-        System.out.println("Cosines: \n" + cosines);
+        //Collections.reverse(cosines);
+        System.out.println("Cosines: "+cosines);
+
         ArrayList<Customer> candidates = new ArrayList<Customer>();
         for (int i = 0; i < k; i++) {
             candidates.add(customerMap.get(cosines.get(i)));
-        }
-        for (Map.Entry<Double, Customer> entry : customerMap.entrySet()) {
-            System.out.println("Cosine: "+entry.getKey()+" Customer: "+entry.getValue());
-
         }
 
         return candidates;
