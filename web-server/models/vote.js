@@ -27,3 +27,27 @@ exports.insertVote = function(name, beerId, callback){
 		});
 	});
 };
+
+exports.getPrefsByName = function(name, callback){
+	pg.connect(config.DB_URL, function (err, client, done) {
+		if(err){
+			console.log("Error when connecting to the database");
+			console.log(err);
+			return callback(err, null);
+		}
+
+		client.query("SELECT votes.name, avg(beska) as beska, avg(sotma) as sotma, avg(fyllighet) AS fyllighet FROM votes, beer WHERE beer.beer_id = votes.beer_id AND votes.name = $1 GROUP by votes.name",[name], function (err, result){
+			done();
+			if(err){
+				console.log("Error while selecting from database");
+				console.log(err);
+			} else {
+				//Do nothing
+			}
+
+			process.nextTick(function() {
+				callback(err, result.rows[0]);
+			});
+		});
+	});
+};

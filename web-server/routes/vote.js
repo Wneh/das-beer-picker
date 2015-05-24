@@ -41,7 +41,10 @@ exports.vote = function(req,res){
 			res.status(500).send(err);
 		} else {
 			// res.status(200).send("Vote success!");
-			res.render('thanksVoting',{name: userName});
+			voteModel.getPrefsByName(userName, function (err, result){
+				console.log(result);
+				res.render('thanksVoting',{name: userName, prefs: result});
+			});
 		}
 	});
 };
