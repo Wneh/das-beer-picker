@@ -63,8 +63,6 @@ public class Main {
 					printToFile("div.dat",mostDiverseProducts);
 
 					//send to database
-					dropResultTable(connection);
-					createResultTable(connection);
 					insertResult(connection, products, "all");
 					insertResult(connection, topKProducts,"top");
 					insertResult(connection, mostDiverseProducts,"div");
@@ -72,15 +70,11 @@ public class Main {
 					break;
 				case MENU_INITIALIZE:
 					dropTables(connection);
+					dropResultTable(connection);
+					createResultTable(connection);
 					new createRandomPrefs();
 					System.out.println();
 					System.out.println("WARNING! Wait for votes");
-					System.out.println("Press 1 when ready and then run");
-					switch (input.nextInt()){
-						case 1:
-							break;
-						default:break;
-					}
 					break;
 				default:return;
 			}
