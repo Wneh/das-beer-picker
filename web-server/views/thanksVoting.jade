@@ -1,17 +1,34 @@
 extends layout
 
 block content
-	div(class="col-md-6 col-md-offset-3")
-		h3 Thank for your vote, #{name}!
+	div(row class="row12")
+		div(class="col-md-2")
+		div(class="col-md-8")
+			h3 Thank for your vote, #{name}!
 
-		a(href="/") Click here to go back!
+			a(href="/") Click here to go back!
 
-		p or
+			p or
 
-		a(href="/result") click here to go the result page
+			a(href="/result") Click here for the results!
+			h3 Your taste preferences
 
-		h3 Your unweighted result:
-		p Beska: #{prefs.beska}
-		p Fyllighet: #{prefs.fyllighet}
-		p Sötma: #{prefs.sotma}
-
+			div(class="row")
+				div(class="col-md-3 circle")
+					p(class="circle-text") Bitterness
+				div(class="col-md-3 circle")
+					div(class="chart" id="graph" data-percent="#{prefs.beska*100}")
+			div(class="row")
+				div(class="col-md-3 circle")
+					p(class="circle-text") Fullness
+				div(class="col-md-3 circle")
+					div(class="chart" id="graph2" data-percent="#{prefs.fyllighet*100}")
+			div(class="row")
+				div(class="col-md-3 circle")
+					p(class="circle-text") Sweetness
+				div(class="col-md-3 circle")
+					div(class="chart" id="graph3" data-percent="#{prefs.sotma*100}")
+		div(class="col-md-2")
+	script(src="circle.js")
+	script(src="circle2.js")
+	script(src="circle3.js")

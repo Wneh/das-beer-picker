@@ -72,19 +72,27 @@
 			        },
 			        series: [
 					{
-			        	name: 'Div',
+			        	name: 'Most Diverse',
 			            color: '#00FF00',
 			            colorByPoint: false,
+						marker : {
+							enabled : true,
+							radius : 8
+						},
 			            data: inputData.div
 			        },
 			        {
-			            name: 'Top',
+			            name: 'Top K Result',
 			            color: '#ff9a55',
+						marker : {
+							enabled : true,
+							radius : 8
+						},
 			            colorByPoint: false,
 			            data: inputData.top
 			        },
 			        {
-			            name: 'All',
+			            name: 'All products',
 			            color: '#FF0000',
 			            colorByPoint: false,
 			            data: inputData.all
