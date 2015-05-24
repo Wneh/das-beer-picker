@@ -45,7 +45,7 @@ public class Main {
 					//==RUN MAIN ALGORITHM
 
 					//Top k products by Customer preferences
-					int k = 10;
+					int k = 5;
 					ArrayList<Product> topKProducts = marketAnalyzer.getTopKProducts(k);
 					System.out.println("Top K Products: \n" + topKProducts);
 
