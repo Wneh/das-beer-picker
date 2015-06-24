@@ -44,9 +44,27 @@ Menu:
 
 ````
 
-Type `1`to set up the databse tables and insert the needed data.
+Type `1`to set up the databse tables and insert the needed data. Then let the program stay in idle and wait.
 
 ### 3. Start the web server
 
-Start the [web server](https://github.com/Wneh/moderndatabase/blob/master/web-server/app.js)
+Start the [web server](https://github.com/Wneh/moderndatabase/blob/master/web-server/app.js) with the following command:
+
+````
+node app.js
+````
+
+You should get something like this promted in the console:
+
+````
+Example app listening at http://0.0.0.0:3000
+````
+
+Navigate to the address promted in to you in the console and add some votes.
+
+### 4. Genereate the result
+
+
+
+
 
