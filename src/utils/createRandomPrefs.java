@@ -38,7 +38,7 @@ public class createRandomPrefs {
 		
 		createTableVote(connection);
 
-		createBeerVotess(connection, beers);
+//		createBeerVotess(connection, beers);
 	}
 	
 	/**
