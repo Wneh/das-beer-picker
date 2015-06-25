@@ -17,7 +17,7 @@ This project was made for the DD2471 course at Royal Institute of Technology.
 
 ### Short info on work flow
 
-The project is separated into two parts, the web server(node.js) and the algorithm backend application(java). The web server lets the users enter their preferences. These gets saved into the database. Thereafter the java application can be run and generate the result, which is saved into the database. The final step is to view the result on from the web server.
+The project is separated into two parts, the web server(node.js) and the algorithm back-end application(java). The web server lets the users enter their preferences. These gets saved into the database. Thereafter the java application can be run and generate the result, which is saved into the database. The final step is to view the result on from the web server.
 
 ### Database
 
@@ -62,7 +62,7 @@ Example app listening at http://0.0.0.0:3000
 
 Navigate to the address prompted in to you in the console and add some votes.
 
-### 4. Genereate the result
+### 4. Generate the result
 
 Go back to the java application and from the menu type `2`. The result will be created and saved into the database
 
@@ -76,7 +76,7 @@ Alternative go to:
 /result
 ````
 
-So for the address in the previous example the url would be:
+So for the address in the previous example the URL would be:
 
 ````
 http://0.0.0.0:3000/result
