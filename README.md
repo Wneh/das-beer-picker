@@ -44,7 +44,7 @@ Menu:
 
 ````
 
-Type `1`to set up the database tables and insert the needed data. Then let the program stay in idle and wait.
+Type `1` to set up the database tables and insert the needed data. Then let the program stay in idle and wait.
 
 ### 3. Start the web server
 
@@ -54,7 +54,7 @@ Start the [web server](https://github.com/Wneh/moderndatabase/blob/master/web-se
 node app.js
 ````
 
-You should get something like this prompted in the console:
+You should get something like this prompted in the terminal:
 
 ````
 Example app listening at http://0.0.0.0:3000
@@ -76,7 +76,7 @@ Alternative go to:
 /result
 ````
 
-So for the address above the URL would be:
+So for the address in the previous example the URL would be:
 
 ````
 http://0.0.0.0:3000/result
