@@ -64,8 +64,27 @@ Navigate to the address promted in to you in the console and add some votes.
 
 ### 4. Genereate the result
 
+Go back to the java application and from the menu type `2`. The result will be created and saved into the database
 
+### 5. View the result
 
+If you still have the voting page open in the browser the page should auto refresh and view the result(auto refresh is set to 10 seconds).
+
+Alternative go to:
+
+````
+/result
+````
+
+So for the address above the ur would be:
+
+````
+http://0.0.0.0:3000/result
+````
+
+## Licence
+
+See licence [file](https://github.com/Wneh/moderndatabase/blob/master/LICENSE.md)
 
 
 
