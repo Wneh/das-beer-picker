@@ -8,7 +8,7 @@ h1 {
 
 .jumbotron{
     margin-top: 30px !important;
-    background-image: url("beerbanner.jpg");
+    background-image: url("./../beerbanner.jpg");
     max-width: 960px !important;
 }
 
